@@ -3,7 +3,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import SubjectCard from '../components/SubjectCard';
 import { useLevel } from '../hooks/useLevel';
-
 const StudyLevelsPage = () => {
   const { studyLevels, loading } = useLevel();
   const navigate = useNavigate();

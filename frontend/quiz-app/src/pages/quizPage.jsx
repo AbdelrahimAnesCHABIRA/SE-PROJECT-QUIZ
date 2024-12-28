@@ -4,7 +4,8 @@ import { MCQQuestion } from '../quizcomponents/MCQQuestion';
 import { BottomBar } from '../quizcomponents/BottomBar';
 import { useQuiz } from '../hooks/useQuiz';
 import { useQuizTemplate } from '../hooks/useQuizTemplate';
-
+import { QuizStartCard } from '../components/quiz/QuizStartCard';
+import  Spinner  from '../components/spinner/Spinner';
 const QuizPage = () => {
     const { state } = useLocation(); // Access navigation state
     const { questions, quizTemplate_id } = state || { questions: [], quizTemplate_id: null }; // Extract questions list and FullQuiz ID
@@ -17,6 +18,7 @@ const QuizPage = () => {
     const [quizTemplate, setQuizzTemplate] = useState(null);
     const { createQuizInstance, updateQuizTemplateProgress } = useQuiz();
     const { fetchQuizTemplate } = useQuizTemplate();
+    const [hasStarted, setHasStarted] = useState(false);
     
     useEffect(() => {
         const fetchTemplate = async () => {
@@ -25,7 +27,11 @@ const QuizPage = () => {
             setCurrentQuestionIndex(qt.progress);
         };
         fetchTemplate();
-    }, [quizTemplate_id, fetchQuizTemplate]);
+    }, [quizTemplate_id]);
+
+    useEffect(() => {
+        console.log('QuizTemplate:', quizTemplate);
+    }, [quizTemplate]);
 
     if (!questions.length) return <p>No questions available.</p>;
 
@@ -33,6 +39,9 @@ const QuizPage = () => {
 
     const handleScore = (score) => {
         setSelectedScore(score); // Mark the button as selected
+    };
+    const handleOnBack = () => {
+        navigate('/explorer'); // Navigate back to the home page
     };
 
     const handleNextQuestion = async () => {
@@ -82,6 +91,25 @@ const QuizPage = () => {
             alert('Error saving quiz instance or updating FullQuiz score. Please try again.');
         }
     };
+    if (!hasStarted) {
+        // Check if quiz template is still loading
+        if (!quizTemplate) {
+            return (
+                <div className="loading-container">
+                    <Spinner />
+                </div>
+            );
+        }
+    
+        // Once loaded, show the start card
+        return (
+            <QuizStartCard 
+                quiz={quizTemplate}
+                onStart={() => setHasStarted(true)}
+                onBack={handleOnBack}
+            />
+        );
+    }
 
     return (
         <div>
