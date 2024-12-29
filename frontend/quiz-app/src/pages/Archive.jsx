@@ -24,20 +24,40 @@ export default function Archive() {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Search & filters
-  const { query, setQuery, searchResults, isSearching, setItems } = useSearch([]);
-  const { filters, filterHandlers, isFilterPanelOpen, toggleFilterPanel } = useArchiveFilters();
+  const {
+    query,
+    setQuery,
+    searchResults,
+    isSearching,
+    setItems,
+    playCount,
+    setPlayCount,
+    totalPages: searchTotalPages,
+  } = useSearch([]);
+  const { filters, filterHandlers, isFilterPanelOpen, toggleFilterPanel } =
+    useArchiveFilters();
 
   // Decide what to display: local search results or all quizzes
   const displayItems = query ? searchResults : quizzes;
   // Use totalItems from the server for pagination
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const finalTotalPages = query
+    ? searchTotalPages
+    : Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+  useEffect(() => {
+    setPlayCount(2);
+  }, [setPlayCount]);
 
   // Fetch data when currentPage changes
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const { data, total } = await fetchArchiveQuizzes(childId, currentPage, ITEMS_PER_PAGE);
+        const { data, total } = await fetchArchiveQuizzes(
+          childId,
+          currentPage,
+          ITEMS_PER_PAGE
+        );
         setQuizzes(data);
         setTotalItems(total);
         setItems(data); // Update the search hook data
@@ -97,7 +117,7 @@ export default function Archive() {
 
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={finalTotalPages}
           onPageChange={handlePageChange}
           isSearching={isSearching || loading}
         />

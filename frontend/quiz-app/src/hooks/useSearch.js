@@ -8,6 +8,7 @@ export const useSearch = (initialItems = []) => {
   const [isSearching, setIsSearching] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [playCount, setPlayCount] = useState(1);
 
   useEffect(() => {
     const performSearch = async () => {
@@ -23,7 +24,8 @@ export const useSearch = (initialItems = []) => {
           params: {
             search: query,
             page: currentPage,
-            limit: 12
+            limit: 12,
+            ...(playCount === 1 ? { 'playCount[$lte]': 1 } : { 'playCount[$gte]': playCount })
           }
         });
         setSearchResults(response.data.results);
@@ -37,7 +39,7 @@ export const useSearch = (initialItems = []) => {
 
     const debounceTimer = setTimeout(performSearch, 300);
     return () => clearTimeout(debounceTimer);
-  }, [query, currentPage]);
+  }, [query, currentPage, playCount]);
 
   return {
     query,
@@ -47,6 +49,8 @@ export const useSearch = (initialItems = []) => {
     setItems,
     currentPage,
     setCurrentPage,
-    totalPages
+    totalPages,
+    playCount,
+    setPlayCount
   };
 };

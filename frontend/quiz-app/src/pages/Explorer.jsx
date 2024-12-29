@@ -9,7 +9,10 @@ import { useSearch } from '../hooks/useSearch';
 
 
 export default function Explorer() {
-  const { query, setQuery, searchResults, isSearching, setItems, currentPage, setCurrentPage, totalPages } = useSearch();
+  const { query, setQuery, searchResults, isSearching, setItems, currentPage, setCurrentPage, totalPages,setPlayCount } = useSearch();
+  useEffect(() => {
+    setPlayCount(1);
+  }, [setPlayCount]);
 
 
   return (

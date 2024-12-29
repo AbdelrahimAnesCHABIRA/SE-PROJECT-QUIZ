@@ -7,10 +7,15 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const { limit = 12, page = 1, search, ...filters } = req.query;
-        const query = {
-            ...filters,
-            ...(search && { title: { $regex: search, $options: 'i' } })
-        };
+        let query = {};
+
+        if (search) {
+            query.title = { $regex: search, $options: 'i' };
+        }
+
+        if (Object.keys(filters).length > 0) {
+            Object.assign(query, filters);
+        }
 
         const totalItems = await QuizTemplate.countDocuments(query);
         const totalPages = Math.ceil(totalItems / limit);
