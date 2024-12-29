@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Trophy, Clock, ArrowLeft } from 'lucide-react';
 import { CountdownOverlay } from './CountdownOverlay';
-
+import { useNavigate } from 'react-router-dom';
 export const QuizStartCard = ({ quiz, onStart, onBack }) => {
   const [showCountdown, setShowCountdown] = useState(false);
+  const navigate = useNavigate();
 
   const handleStart = () => {
     setShowCountdown(true);
@@ -33,7 +34,7 @@ export const QuizStartCard = ({ quiz, onStart, onBack }) => {
             >
               <div className="absolute top-4 left-4 z-20">
                 <button
-                  onClick={onBack}
+                  onClick={() => navigate(-1)}
                   className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white flex items-center gap-2"
                 >
                   <ArrowLeft size={20} />

@@ -14,14 +14,15 @@ const generateMCQs = async (text, numQuestions) => {
   D) [option]
   Correct Answer: [letter]
   
-  Text: ${text}
-  language: ar
+  Text: ${text},
+  The questions should use the same language as the text,
   no "Here are # multiple-choice questions based on the provided text:"
   no "**Question #:**"
   `;
 
   const result = await model.generateContent(prompt);
   const response = await result.response;
+  console.log(response.text());
   return response.text();
 };
 

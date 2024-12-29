@@ -9,6 +9,7 @@ import { FilterButton } from '../components/Filters/FilterButton';
 import { FilterPanel } from '../components/Filters/FilterPanel';
 import { useFilters } from '../hooks/useFilters';
 import { QuizCard } from '../components/quiz/quizcard/QuizCard';
+import  Spinner  from '../components/spinner/Spinner';
 import { 
   fetchRecentQuizzes, 
   fetchRecentFilteredQuizzes, 
@@ -26,7 +27,8 @@ export default function SeeAll() {
   const [totalItems, setTotalItems] = useState(0);
   const [activeFilters, setActiveFilters] = useState(null);
   const navigate = useNavigate();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(totalItems / 12); // 12 is the limit per page
   
   const {
     subjects,
@@ -40,21 +42,17 @@ export default function SeeAll() {
     onQuestionCountChange,
     getSelectedFilterLabels
   } = useFilters();
-
-  const {
-    currentPage,
-    totalPages,
-    paginatedItems,
-    handlePageChange
-  } = usePagination(filteredItems);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const fetchPageData = async (page) => {
     setLoading(true);
     try {
       const section = new URLSearchParams(location.search).get('section');
       const childId = '64a2c4a5b7e2d5e37e9fc314';
-      console.log('here',activeFilters)
-      // Use different fetcher based on whether filters are active
+      
       const response = activeFilters 
         ? await fetchRecentFilteredQuizzes(childId, page, activeFilters)
         : await fetchRecentQuizzes(childId, page);
@@ -69,7 +67,6 @@ export default function SeeAll() {
     }
   };
 
-  // Mock data - replace with actual data fetching
   useEffect(() => {
     fetchPageData(currentPage);
   }, [currentPage, location.search, activeFilters]);
@@ -122,7 +119,7 @@ export default function SeeAll() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {loading ? (
-        <div>Loading...</div>
+        <Spinner/>
       ) : (
         filteredItems.map((quiz, index) => (
           <QuizCard 
@@ -144,11 +141,11 @@ export default function SeeAll() {
     </div>
 
     <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages}
-      onPageChange={handlePageChange}
-      isSearching={loading}
-    />
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        isSearching={loading}
+      />
 
 <FilterPanel
           isOpen={isFilterOpen}

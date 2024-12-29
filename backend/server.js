@@ -30,7 +30,7 @@ const QuizTemplateSeeAllFilterRoutes = require('./routes/QuizTemplateSeeAllFilte
 // Add other routes similarly
 
 // const seedModules = require('./seedModules')
-// const seedChapters = require('./seedChapters')
+const seedChapters = require('./seedChapters')
 const seedQuestions = require('./seedQuestions')
 // const seedChildren = require('./seedChildren')
 
@@ -43,7 +43,9 @@ app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
 
-
+app.use(cors({
+  exposedHeaders: ['X-Total-Count']
+}));
 // Error handling
 app.use(errorHandler);
 
@@ -75,6 +77,7 @@ app.use('/api/QuizTemplateSeeAllFilter', QuizTemplateSeeAllFilterRoutes);
 
 
 mongoose.connect(process.env.MONGODB_URI)
+
   .then(() => {
     app.listen(5000, () => console.log('connected to db & listening on port 5000 ...'));
 

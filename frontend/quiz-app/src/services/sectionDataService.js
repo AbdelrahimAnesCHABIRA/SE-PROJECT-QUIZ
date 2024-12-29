@@ -15,6 +15,7 @@ export const fetchRecentQuizzes = async (childId, page, limit = 12) => {
     total: parseInt(response.headers['x-total-count'] || '0')
   };
 };
+
 // frontend/quiz-app/src/services/sectionDataService.js
 
 export const fetchRecentFilteredQuizzes = async (childId, page, filters, limit = 12) => {
