@@ -15,7 +15,7 @@ export const FilterPanel = ({ isOpen, onClose, filters, handlers }) => {
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 z-50 h-full" onClick={onClose}>
       <div 
         className="absolute left-4 top-[72px] w-80 bg-white rounded-lg shadow-xl flex flex-col max-h-[calc(100vh-96px)]"
         onClick={e => e.stopPropagation()}

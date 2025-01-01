@@ -13,7 +13,7 @@ export const FilterPanel = ({
   onChaptersChange,
   questionCount,
   onQuestionCountChange,
-  onApplyFilters // Add this prop
+  onApplyFilters 
 }) => {
 
   const handleApplyFilters = () => {
