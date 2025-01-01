@@ -26,6 +26,7 @@ const UserRoutes = require('./routes/UserRoutes');
 const ChildRoutes = require('./routes/ChildRoutes');
 const QuizTemplateSearchRoutes = require('./routes/QuizTemplateSearchRoutes');
 const QuizTemplateSeeAllFilterRoutes = require('./routes/QuizTemplateSeeAllFilterRoutes');
+const AllQuestions = require('./routes/getQuestionsByLevelRouters');
 
 // Add other routes similarly
 
@@ -74,6 +75,7 @@ app.use('/api', quizRoutesGen);
 app.use('/api/QuizTemplateSearch', QuizTemplateSearchRoutes);
 app.use('/api/QuizTemplateSeeAll', quizTemplateSeeAllRoutes);
 app.use('/api/QuizTemplateSeeAllFilter', QuizTemplateSeeAllFilterRoutes);
+app.use('/api/AllQuestions', AllQuestions);
 
 
 mongoose.connect(process.env.MONGODB_URI)

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
-export const MultiSelect = ({ options, value, onChange, placeholder }) => {
+export const MultiSelect = ({ options, value, onChange, placeholder, isMulti = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -17,9 +17,14 @@ export const MultiSelect = ({ options, value, onChange, placeholder }) => {
   }, []);
 
   const handleOptionClick = (optionValue) => {
-    const newValue = value.includes(optionValue)
-      ? value.filter(v => v !== optionValue)
-      : [...value, optionValue];
+    let newValue;
+    if (!isMulti) {
+      newValue = value.includes(optionValue) ? [] : [optionValue];
+    } else {
+      newValue = value.includes(optionValue)
+        ? value.filter((v) => v !== optionValue)
+        : [...value, optionValue];
+    }
     onChange(newValue);
   };
 

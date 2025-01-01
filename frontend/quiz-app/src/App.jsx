@@ -19,6 +19,7 @@ import Hebergements from "./pages/Hebergements";
 import Explorer from "./pages/Explorer";
 import Rapports from "./pages/Rapports";
 import Classes from "./pages/Classes";
+import CreatePage from "./pages/createPage";
 const App = () => {
   return (
     <div className="App">
@@ -53,6 +54,17 @@ const App = () => {
                 <Sidebar />
                 <main className="flex-1 mr-16 md:mr-64 p-5 bg-gray-50 min-h-screen">
                   <Archive />
+                </main>
+              </div>
+            }
+          />
+          <Route
+            path="/create"
+            element={
+              <div className="flex">
+                <Sidebar />
+                <main className="flex-1 mr-16 md:mr-64 p-5 bg-gray-50 min-h-screen">
+                  <CreatePage />
                 </main>
               </div>
             }

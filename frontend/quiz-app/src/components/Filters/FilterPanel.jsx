@@ -1,6 +1,7 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { MultiSelect } from './MultiSelect';
+import { useLocation } from 'react-router-dom';
 
 export const FilterPanel = ({ 
   isOpen, 
@@ -31,6 +32,7 @@ export const FilterPanel = ({
   };
 
   const { t } = useTranslation();
+  const location = useLocation();
 
   if (!isOpen) return null;
 
@@ -66,6 +68,7 @@ export const FilterPanel = ({
               value={selectedSubjects}
               onChange={onSubjectsChange}
               placeholder={t('filters.selectSubjects')}
+              isMulti={location.pathname === '/create' ? false : true}
             />
           </div>
 
