@@ -13,6 +13,9 @@ import { QuestionSelectionCard } from "../anescomponents/QuestionSelectionCard";
 import { InputField } from "../anescomponents/InputField";
 import Button from "../anescomponents/Button";
 import { useQuizTemplate } from "../hooks/useQuizTemplate";
+import { useQuiz } from "../hooks/useQuiz";
+
+
 
 export default function CreatePage() {
   const { t } = useTranslation();
@@ -20,7 +23,7 @@ export default function CreatePage() {
   const location = useLocation();
   const { createQuizTemplate } = useQuizTemplate();
   const [questions, setQuestions] = useState([]);
-
+  const [questionStats, setQuestionStats] = useState([]); 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
@@ -32,6 +35,8 @@ export default function CreatePage() {
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [randomQuestionCount, setRandomQuestionCount] = useState(0);
   const child_id = '64a2c4a5b7e2d5e37e9fc314'; // Add your actual child_id
+  const { fetchStats } = useQuiz();
+  
 
   const {
     query,
@@ -50,7 +55,6 @@ export default function CreatePage() {
     selectedSubjects,
     selectedChapters,
     selectedQuestionCount,
-    selectedQuizTypes,
     onSubjectsChange,
     onChaptersChange,
     onQuestionCountChange,
@@ -72,12 +76,17 @@ export default function CreatePage() {
     try {
       const level = "Primary"; // adjust this as needed
       const response = await fetchAllQuestions(level, page, activeFilters, 24);
-      console.log("response", response.data);
       setQuestions(response.data);
       setTotalItems(response.total);
       setSearchItems(response.data);
+      
+      // Fetch stats for the new questions immediately
+      if (response.data.length > 0) {
+        const stats = await fetchStats(response.data, child_id);
+        setQuestionStats(stats);
+      }
     } catch (error) {
-      console.error("Failed to fetch questions:", error);
+      console.error("Failed to fetch questions or stats:", error);
     } finally {
       setLoading(false);
     }
@@ -196,14 +205,18 @@ export default function CreatePage() {
           {loading ? (
             <Spinner />
           ) : displayItems.length > 0 ? (
-            displayItems.map((q, idx) => (
-              <QuestionSelectionCard
-                key={idx}
-                questionText={q.questionText}
-                isSelected={selectedQuestions.includes(q._id)}
-                onToggle={() => toggleQuestionSelection(q._id)}
-              />
-            ))
+            displayItems.map((q, idx) => {
+              const stats = questionStats.find((stat) => stat.questionId === q._id) || {};
+              return (
+                <QuestionSelectionCard
+                  key={idx}
+                  questionText={q.questionText}
+                  stats={stats}
+                  isSelected={selectedQuestions.includes(q._id)}
+                  onToggle={() => toggleQuestionSelection(q._id)}
+                />
+              );
+            })
           ) : (
             <div className="col-span-full text-center text-gray-500">
               No items found
