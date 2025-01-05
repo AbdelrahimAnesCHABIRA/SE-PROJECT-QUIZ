@@ -40,30 +40,28 @@ app.use(express.json());
 // Ensure required directories exist
 ensureDirectoryExists(path.join(__dirname, config.uploadDir));
 ensureDirectoryExists(path.join(__dirname, config.resultsDir));
-//app.use(cors());
-app.use(express.json());
-app.use(fileUpload());
 
-// app.use(cors({
-//   exposedHeaders: ['X-Total-Count'],
-// }));
-// Error handling
-app.use(errorHandler);
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  exposedHeaders: ['X-Total-Count'],
+  allowedHeaders: ["Content-Type"]
+};
 
-app.use(
-  session({
-    secret: 'your-secret-key', // Replace with a strong secret key
-    resave: false,
-    secure: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: false, // true in production with HTTPS
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+app.use(cors(corsOptions));
+app.use(session({
+  secret: 'your-secret-key', // Replace with a strong secret key
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // true in production with HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    sameSite: 'lax'
   } // Set `secure: true` if using HTTPS
-  })
-);
-
+}));
+app.use(fileUpload());
 
 // Routes
 app.use('/api/Modules', ModuleRoutes);
@@ -82,13 +80,11 @@ app.use('/api/QuizTemplateSeeAll', quizTemplateSeeAllRoutes);
 app.use('/api/QuizTemplateSeeAllFilter', QuizTemplateSeeAllFilterRoutes);
 app.use('/api/AllQuestions', AllQuestions);
 
+// Error handling
+app.use(errorHandler);
 
 mongoose.connect(process.env.MONGODB_URI)
-
   .then(() => {
     app.listen(5000, () => console.log('connected to db & listening on port 5000 ...'));
-
   })
   .catch(err => console.error(err));
-
-

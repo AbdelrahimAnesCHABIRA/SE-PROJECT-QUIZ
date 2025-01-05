@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+axios.defaults.withCredentials = true;
+
 export const checkUserSession = async (navigate) => {
     try {
         const response = await axios.get('http://localhost:5000/api/User/session');
