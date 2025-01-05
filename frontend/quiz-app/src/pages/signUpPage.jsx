@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -14,6 +14,7 @@ const Signup = () => {
         password: "",
         confirmPassword: "",
     });
+    const navigate = useNavigate();
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
@@ -52,7 +53,7 @@ const Signup = () => {
         }
         if (formData.email.trim()) {
             try {
-                const response = await fetch(`api/User?email=${formData.email.trim()}`);
+                const response = await fetch(`http://localhost:5000/api/User?email=${formData.email.trim()}`);
                 const data = await response.json(); // Parse the response to check for users
                 if (data.length > 0) { // If the response is not empty, the email is already taken
                     errors.email = "This email is already used.";
@@ -78,14 +79,14 @@ const Signup = () => {
 
         try {
             // Make a POST request to the signup route
-            const response = await axios.post("/api/User", {
+            const response = await axios.post("http://localhost:5000/api/User", {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
                 email: formData.email,
                 passwordHash: formData.password, // Send password as passwordHash
             });
 
-            setSuccess("User registered successfully!");
+            navigate('/signin');
             setFormData({
                 firstName: "",
                 lastName: "",

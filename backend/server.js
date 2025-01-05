@@ -40,13 +40,13 @@ app.use(express.json());
 // Ensure required directories exist
 ensureDirectoryExists(path.join(__dirname, config.uploadDir));
 ensureDirectoryExists(path.join(__dirname, config.resultsDir));
-app.use(cors());
+//app.use(cors());
 app.use(express.json());
 app.use(fileUpload());
 
-app.use(cors({
-  exposedHeaders: ['X-Total-Count']
-}));
+// app.use(cors({
+//   exposedHeaders: ['X-Total-Count'],
+// }));
 // Error handling
 app.use(errorHandler);
 
@@ -54,8 +54,13 @@ app.use(
   session({
     secret: 'your-secret-key', // Replace with a strong secret key
     resave: false,
+    secure: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Set `secure: true` if using HTTPS
+    cookie: {
+      secure: false, // true in production with HTTPS
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+  } // Set `secure: true` if using HTTPS
   })
 );
 
