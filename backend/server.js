@@ -44,9 +44,11 @@ ensureDirectoryExists(path.join(__dirname, config.resultsDir));
 app.use(express.json());
 app.use(fileUpload());
 
-// app.use(cors({
-//   exposedHeaders: ['X-Total-Count'],
-// }));
+app.use(cors({
+  exposedHeaders: ['X-Total-Count'],
+  origin: 'http://localhost:5173', // Frontend URL
+  credentials: true, 
+}));
 // Error handling
 app.use(errorHandler);
 
@@ -59,7 +61,7 @@ app.use(
     cookie: {
       secure: false, // true in production with HTTPS
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      sameSite: 'lax',  
   } // Set `secure: true` if using HTTPS
   })
 );
