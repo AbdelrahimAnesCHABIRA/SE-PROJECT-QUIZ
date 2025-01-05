@@ -18,7 +18,7 @@ const ChooseChildPage = () => {
     const fetchChildren = async () => {
       try {
         const userId = await checkUserSession(navigate);
-        const response = await fetch(`api/Child?userId=${userId}`);
+        const response = await fetch(`http://localhost:5000/api/Child?userId=${userId}`);
         if(response.ok){
           setChildren(await response.json());
           setLoading(false);
@@ -35,7 +35,7 @@ const ChooseChildPage = () => {
 
   const handleChildSelect = async (childId) => {
     try{
-      await axios.post('/api/Child/chooseChild', { childId: childId });
+      await axios.post('http://localhost:5000/api/Child/chooseChild', { childId: childId });
       // Navigate to the next page with the selected child's ID
       navigate(`/child/${childId}`);
     }catch(err){
@@ -46,7 +46,7 @@ const ChooseChildPage = () => {
 
   const handleDeleteChild = async (child) => {
     try {
-      await axios.delete(`/api/children/${child.id}`);
+      await axios.delete(`http://localhost:5000/api/children/${child.id}`);
       setChildren((prev) => prev.filter((c) => c.id !== child.id));
     } catch (err) {
       console.error("Error deleting child:", err);

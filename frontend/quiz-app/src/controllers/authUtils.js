@@ -1,21 +1,22 @@
+import axios from 'axios';
 
 export const checkUserSession = async (navigate) => {
     try {
-        const response = await fetch('/api/User/session', {
-            method: 'GET',
-            credentials: 'same-origin', // Ensure cookies are sent with the request
-        });
+        const response = await axios.get('http://localhost:5000/api/User/session');
 
-        if (!response.ok) {
-            // If response is not ok, redirect to the login page
-            navigate('/signin');
-            return null; // Return null since there's no valid userId
+        console.log('Response in user check is:', response.status);
+        
+        // Check if the response status indicates success
+        if (response.status !== 200) {
+            navigate('/signin'); // Redirect to login page if not authorized
+            return null;
         }
 
-        const data = await response.json(); 
-        return data.userId; 
+        // Return the userId from the response data
+        return response.data.userId;
     } catch (error) {
-        navigate('/signin'); // Redirect to login in case of error
-        return null; // Return null in case of error
+        console.error('Error checking user session:', error.message);
+        navigate('/signin'); // Redirect to login page in case of an error
+        return null; // Return null in case of an error
     }
 };
