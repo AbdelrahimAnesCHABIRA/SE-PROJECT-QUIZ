@@ -8,22 +8,32 @@ const getQuestionsByLevel = async (req, res) => {
       console.log('Query params:', { studyLevel, limit, page, search, filters }); // Debug log
 
       // Find modules
-      const modules = await Module.find({ studyLevel });
-      if (!modules.length) {
-          return res.status(200).json({ results: [], totalPages: 0 });
+      let moduleIds = [];
+      if(filters.subjects) {
+        moduleIds = filters.subjects.split(',');
+      }else {
+        // Get all modules for the study level if no specific subjects selected
+        const modules = await Module.find({ studyLevel });
+        moduleIds = modules.map(m => m._id);
       }
-      
-      const moduleIds = modules.map((m) => m._id);
-      console.log('Found moduleIds:', moduleIds); // Debug log
+      if (!moduleIds.length) {
+        return res.status(200).json({ results: [], totalPages: 0, totalItems: 0 });
+      }
+      let chapterIds = [];
+        if(filters.chapters) {
+            chapterIds = filters.chapters.split(',');
+        }
+        else {
+            // Get all chapters for the selected modules
+            const allChapters = await Chapter.find({ moduleId: { $in: moduleIds } });
+            chapterIds = allChapters.map(c => c._id);
+          }
 
-      // Find chapters
-      const chapters = await Chapter.find({ moduleId: { $in: moduleIds } });
-      if (!chapters.length) {
-          return res.status(200).json({ results: [], totalPages: 0 });
+
+      if (!chapterIds.length) {
+        return res.status(200).json({ results: [], totalPages: 0, totalItems: 0 });
       }
-      
-      const chapterIds = chapters.map((c) => c._id);
-      console.log('Found chapterIds:', chapterIds); // Debug log
+
 
       // Build query
       let query = { chapterId: { $in: chapterIds } };
@@ -32,45 +42,46 @@ const getQuestionsByLevel = async (req, res) => {
           query.questionText = { $regex: search, $options: "i" };
       }
 
-      // Remove empty filter values
-      const cleanFilters = Object.entries(filters).reduce((acc, [key, value]) => {
-          if (value && value !== "") {
-              acc[key] = value;
-          }
-          return acc;
-      }, {});
+    //   // Remove empty filter values
+    //   const cleanFilters = Object.entries(filters).reduce((acc, [key, value]) => {
+    //       if (value && value !== "") {
+    //           acc[key] = value;
+    //       }
+    //       return acc;
+    //   }, {});
 
-      if (Object.keys(cleanFilters).length > 0) {
-          Object.assign(query, cleanFilters);
-      }
+    //   if (Object.keys(cleanFilters).length > 0) {
+    //       Object.assign(query, cleanFilters);
+    //   }
 
       console.log('Final query:', query); // Debug log
 
       // Execute query
-      const questions = await Question.find(query)
+      const [questions, totalItems] = await Promise.all([
+        Question.find(query)
           .sort("-createdAt")
           .skip((page - 1) * parseInt(limit))
-          .limit(parseInt(limit));
-
-      const totalItems = await Question.countDocuments(query);
+          .limit(parseInt(limit))
+          .populate('chapterId'),
+        Question.countDocuments(query)
+      ]);
+  
       const totalPages = Math.ceil(totalItems / parseInt(limit));
-
-      console.log(`Found ${questions.length} questions`); // Debug log
-
+  
       return res.status(200).json({
-          results: questions,
-          totalPages,
-          totalItems
+        results: questions,
+        totalPages,
+        totalItems
       });
-
-  } catch (error) {
+  
+    } catch (error) {
       console.error("Error in getQuestionsByLevel:", error);
-      return res.status(500).json({ 
-          message: "Error fetching questions",
-          error: error.message 
+      return res.status(500).json({
+        message: "Error fetching questions",
+        error: error.message
       });
-  }
-};
+    }
+  };
   module.exports = {
     getQuestionsByLevel
 };

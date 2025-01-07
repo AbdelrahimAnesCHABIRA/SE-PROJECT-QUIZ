@@ -6,6 +6,7 @@ export const useQuizTemplate = () => {
   const [error, setError] = useState(null);
 
   const createQuizTemplate = async (quizTemplatePayload) => {
+    console.log(quizTemplatePayload)
     setLoading(true);
     try {
       const response = await axios.post('http://localhost:5000/api/quizTemplate', quizTemplatePayload, {

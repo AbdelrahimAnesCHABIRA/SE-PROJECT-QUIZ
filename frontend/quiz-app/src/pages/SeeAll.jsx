@@ -43,7 +43,6 @@ export default function SeeAll() {
     selectedSubjects,
     selectedChapters,
     selectedQuestionCount,
-    selectedQuizTypes,
     onSubjectsChange,
     onChaptersChange,
     onQuestionCountChange,

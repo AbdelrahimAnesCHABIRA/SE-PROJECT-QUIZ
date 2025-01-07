@@ -17,17 +17,17 @@ import { useQuiz } from "../hooks/useQuiz";
 import { useChildSession } from "../hooks/useChildSession";
 import axios from "axios";
 
-
 export default function CreatePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { createQuizTemplate } = useQuizTemplate();
   const [questions, setQuestions] = useState([]);
-  const [questionStats, setQuestionStats] = useState([]); 
+  const [questionStats, setQuestionStats] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
+  const [hasAppliedFilters, setHasAppliedFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     selectedSubjects: [],
     selectedChapters: [],
@@ -45,10 +45,11 @@ export default function CreatePage() {
           withCredentials: true, // Ensure cookies are sent
         });
         setChildId(res.data.childId);
-        setStudyLevel(res.data.studyLevel); 
-        console.log("retrieved child: " + childId)
+        setStudyLevel(res.data.studyLevel);
+        console.log("retrieved child: " + childId);
       } catch (err) {
-        console.error("Error fetching childId from session:", err);      }
+        console.error("Error fetching childId from session:", err);
+      }
     };
     fetchChildIdFromSession();
   }, []);
@@ -87,6 +88,7 @@ export default function CreatePage() {
   };
 
   const fetchPageData = async (page) => {
+    console.log("activeFilters: ", activeFilters);
     setLoading(true);
     try {
       const level = "Primary"; // adjust this as needed
@@ -94,7 +96,7 @@ export default function CreatePage() {
       setQuestions(response.data);
       setTotalItems(response.total);
       setSearchItems(response.data);
-      
+
       // Fetch stats for the new questions immediately
       if (response.data.length > 0) {
         const stats = await fetchStats(response.data, childId);
@@ -109,7 +111,7 @@ export default function CreatePage() {
 
   useEffect(() => {
     fetchPageData(currentPage);
-  }, [currentPage, location.search, activeFilters,childId]);
+  }, [currentPage, location.search, activeFilters, childId]);
 
   const handleApplyFilters = (filters) => {
     setActiveFilters({
@@ -117,6 +119,7 @@ export default function CreatePage() {
       selectedChapters: filters.selectedChapters || [],
       selectedQuestionCount: filters.selectedQuestionCount || [],
     });
+    setHasAppliedFilters(true);
     handlePageChange(1);
   };
   const toggleQuestionSelection = (questionId) => {
@@ -134,21 +137,23 @@ export default function CreatePage() {
     }
 
     const shuffled = [...questions].sort(() => 0.5 - Math.random());
-    const randomizedSelection = shuffled.slice(0, randomQuestionCount).map((q) => q._id);
+    const randomizedSelection = shuffled
+      .slice(0, randomQuestionCount)
+      .map((q) => q._id);
     setSelectedQuestions(randomizedSelection);
   };
 
   const startQuiz = async () => {
     if (selectedQuestions.length === 0) {
-      alert('Please select at least one question to start the quiz.');
+      alert("Please select at least one question to start the quiz.");
       return;
     }
 
     try {
       const quizTemplatePayload = {
-        title: 'Custom Quiz',
-        module: location.state?.module_id || null,
-        child: childId,
+        title: "Custom Quiz",
+        module: activeFilters.selectedSubjects,
+        child: childId || "677ba6d098d31c52ae790a31",
         questions: selectedQuestions,
         chapters: activeFilters.selectedChapters,
       };
@@ -156,19 +161,22 @@ export default function CreatePage() {
       const quizTemplate = await createQuizTemplate(quizTemplatePayload);
 
       if (!quizTemplate) {
-        throw new Error('Failed to create QuizTemplate');
+        throw new Error("Failed to create QuizTemplate");
       }
 
       const selectedQuestionsData = questions.filter((q) =>
         selectedQuestions.includes(q._id)
       );
 
-      navigate('/quiz', {
-        state: { questions: selectedQuestionsData, quizTemplate_id: quizTemplate._id },
+      navigate("/quiz", {
+        state: {
+          questions: selectedQuestionsData,
+          quizTemplate_id: quizTemplate._id,
+        },
       });
     } catch (err) {
-      console.error('Failed to start quiz:', err);
-      alert('Failed to start quiz. Please try again later.');
+      console.error("Failed to start quiz:", err);
+      alert("Failed to start quiz. Please try again later.");
     }
   };
 
@@ -197,20 +205,23 @@ export default function CreatePage() {
             </div>
             <div className="flex gap-4 items-center">
               <InputField
-                label={'Enter the number of questions'}
-                onChange={(e) => setRandomQuestionCount(parseInt(e.target.value, 10) || 0)}
+                label={"Enter the number of questions"}
+                onChange={(e) =>
+                  setRandomQuestionCount(parseInt(e.target.value, 10) || 0)
+                }
                 placeholder={`Enter a number (1-${questions.length})`}
-                type='number'
+                type="number"
                 value={randomQuestionCount}
-                htmlFor={'number of questions'}
+                htmlFor={"number of questions"}
               />
-              <Button
-                onclick={randomizeQuestions}
-                text={'Randomize'}
-              />
+              <Button onclick={randomizeQuestions} text={"Randomize"} />
               <Button
                 onclick={startQuiz}
-                text={'Start Quiz'}
+                text={"Start Quiz"}
+                disabled={!hasAppliedFilters && selectedQuestions.length === 0}
+                className={
+                  !hasAppliedFilters ? "opacity-50 cursor-not-allowed" : ""
+                }
               />
             </div>
           </div>
@@ -221,7 +232,8 @@ export default function CreatePage() {
             <Spinner />
           ) : displayItems.length > 0 ? (
             displayItems.map((q, idx) => {
-              const stats = questionStats.find((stat) => stat.questionId === q._id) || {};
+              const stats =
+                questionStats.find((stat) => stat.questionId === q._id) || {};
               return (
                 <QuestionSelectionCard
                   key={idx}
