@@ -10,7 +10,6 @@ export const useFilters = () => {
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [selectedChapters, setSelectedChapters] = useState([]);
   const [selectedQuestionCount, setSelectedQuestionCount] = useState([]);
-  // const [selectedQuizTypes, setSelectedQuizTypes] = useState([]);
   const [allChaptersData, setAllChaptersData] = useState({});
 
   const childId = '64a2c4a5b7e2d5e37e9fc314';
@@ -74,13 +73,6 @@ export const useFilters = () => {
       return newData;
     });
   }, [selectedSubjects]);
-
-  // const quizTypes = [
-  //   { value: 'ai', label: 'AI Generated' },
-  //   { value: 'staff', label: 'Staff Generated' },
-  //   { value: 'community', label: 'Community Generated' }
-  // ];
-
   const getSelectedFilterLabels = () => {
     return selectedSubjects.map(value => {
       const subject = subjects.find(s => s.value === value);

@@ -60,6 +60,7 @@ export const useQuizTemplate = () => {
   };
 
   const fetchQuizTemplatesByChildId = async (childId,playedCount) => {
+    console.log(childId)
     setLoading(true);
     try {
       const response = await axios.get(`http://localhost:5000/api/QuizTemplate`, {

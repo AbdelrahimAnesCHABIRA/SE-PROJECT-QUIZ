@@ -63,9 +63,7 @@ router.get('/', async (req, res) => {
         }
 
         const quizTemplates = await query.exec();
-        if (quizTemplates.length === 0) {
-            return res.status(404).json({ error: 'No QuizTemplates found' });
-        }
+        
         res.status(200).json(quizTemplates);
     } catch (err) {
         console.error('Error fetching QuizTemplates:', err);

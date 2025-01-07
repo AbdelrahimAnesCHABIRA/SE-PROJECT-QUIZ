@@ -20,6 +20,8 @@ import Explorer from "./pages/Explorer";
 import Rapports from "./pages/Rapports";
 import Classes from "./pages/Classes";
 import CreatePage from "./pages/createPage";
+import SessionTester from "./pages/testChildSession";
+
 const App = () => {
   return (
     <div className="App">
@@ -36,6 +38,7 @@ const App = () => {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/chooseChild" element={<ChooseChildPage />} />
           <Route path="/test" element={<ProtectedRoute><SessionTest /></ProtectedRoute>} />
+          <Route path="/testChild" element={<SessionTester />} />
           <Route
             path="/quizizz-ai"
             element={

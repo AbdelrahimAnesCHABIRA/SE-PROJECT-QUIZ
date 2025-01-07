@@ -5,12 +5,15 @@ import { ChildCard } from "../components/ChildCard";
 import Button from "../components/Button"; // Assuming you have a reusable button component
 import { checkUserSession } from "../controllers/authUtils";
 import { AddChildModal } from "../components/AddChildModal";
+import { DeleteChildModal } from "../components/DeleteChildModal";
 
 const ChooseChildPage = () => {
   const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [showDeleteWin, setShowDeleteWin] = useState(false);
+  const [childToDelete, setChildToDelete] = useState(null);
   const navigate = useNavigate();
 
   // Fetch user_id from session
@@ -31,11 +34,11 @@ const ChooseChildPage = () => {
     };
 
     fetchChildren();
-  }, []);
+  }, [children]);
 
-  const handleChildSelect = async (childId) => {
+  const handleChildSelect = async (childId, studyLevel) => {
     try{
-      await axios.post('http://localhost:5000/api/Child/chooseChild', { childId: childId });
+      await axios.post('http://localhost:5000/api/Child/chooseChild', { childId: childId, studyLevel: studyLevel });
       // Navigate to the next page with the selected child's ID
       navigate(`/child/${childId}`);
     }catch(err){
@@ -46,8 +49,9 @@ const ChooseChildPage = () => {
 
   const handleDeleteChild = async (child) => {
     try {
-      await axios.delete(`http://localhost:5000/api/children/${child.id}`);
-      setChildren((prev) => prev.filter((c) => c.id !== child.id));
+      await axios.delete(`http://localhost:5000/api/Child?_id=${child._id}`);
+      setChildren((prevChildren) => prevChildren.filter(c => c._id !== child._id));
+      setShowDeleteWin(false);
     } catch (err) {
       console.error("Error deleting child:", err);
       setError("Failed to delete child. Please try again.");
@@ -62,8 +66,41 @@ const ChooseChildPage = () => {
     setIsOpen(false);
   }
 
-  const handleCreateChild = (name, image, year)=>{
-    console.log('attempt to create a child: ' + name);
+  const handleCreateChild = async (firstName, lastName, image, year)=>{
+    const userId = await checkUserSession(navigate);
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('studyLevel', year);
+    formData.append('image', image); // Attach the image file
+
+    try {
+      const response = await fetch('http://localhost:5000/api/Child', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add child');
+      }
+
+      const data = await response.json();
+      console.log('Child added successfully:', data);
+      setChildren((prevChildren) => [...prevChildren, data]);
+    } catch (error) {
+      console.error('Error adding child:', error);
+    }
+  }
+
+  const handleShowDeleteWin =(child)=>{
+    setChildToDelete(child);
+    setShowDeleteWin(true);
+
+  }
+
+  const handleCloseDeleteWin = () => {
+    setShowDeleteWin(false);
   }
 
   if (loading) {
@@ -82,8 +119,8 @@ const ChooseChildPage = () => {
           <ChildCard
             key={child._id}
             Child={child}
-            onClick={() => handleChildSelect(child._id)}
-            onDelete={handleDeleteChild}
+            onClick={() => handleChildSelect(child._id, child.studyLevel)}
+            onDelete={handleShowDeleteWin}
           />
         ))}
       </div>
@@ -96,6 +133,12 @@ const ChooseChildPage = () => {
         isOpen={isOpen}
         onClose={handleCloseAddChild}
         onAdd={handleCreateChild}
+      />
+      <DeleteChildModal 
+        isOpen={showDeleteWin}
+        onClose={handleCloseDeleteWin}
+        onDelete={handleDeleteChild}
+        studentToDelete={childToDelete}
       />
     </div>
   );

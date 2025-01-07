@@ -1,10 +1,12 @@
 import axios from 'axios';
 
+axios.defaults.withCredentials = true;
+
 export const checkUserSession = async (navigate) => {
     try {
         const response = await axios.get('http://localhost:5000/api/User/session');
 
-        console.log('Response in user check is:', response.status);
+
         
         // Check if the response status indicates success
         if (response.status !== 200) {

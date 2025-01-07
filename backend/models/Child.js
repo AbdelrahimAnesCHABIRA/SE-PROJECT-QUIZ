@@ -5,6 +5,8 @@ const childSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   studyLevel: { type: String, required: true },
+  imageUrl: {type: String, required: false},
 });
 
 module.exports = mongoose.model('Child', childSchema);
+

@@ -15,7 +15,7 @@ const QuestionsSelectionPage = () => {
     const [selectedQuestions, setSelectedQuestions] = useState([]);
     const [randomQuestionCount, setRandomQuestionCount] = useState(0);
     const [questionStats, setQuestionStats] = useState([]); // Stores stats for each question
-    const child_id = '64a2c4a5b7e2d5e37e9fc314';
+    const child_id = '677b94ad15ee1822026947aa';
     const { fetchQuestionsByChapters } = useQuestion();
     const { fetchStats, loading, error } = useQuiz();
     const { createQuizTemplate } = useQuizTemplate();

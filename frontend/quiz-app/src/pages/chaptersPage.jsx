@@ -7,7 +7,7 @@ const ChaptersPage = () => {
     const { module_id } = useParams();
     const [isLoaded, setIsLoaded] = useState(false);
     const navigate = useNavigate();
-    const childId = '64a2c4a5b7e2d5e37e9fc314';
+    const childId = '677b94ad15ee1822026947aa';
     const { chapters, loading, error, fetchChapters } = useChapters(module_id, childId);
     
     

@@ -13,6 +13,10 @@ import { QuestionSelectionCard } from "../anescomponents/QuestionSelectionCard";
 import { InputField } from "../anescomponents/InputField";
 import Button from "../anescomponents/Button";
 import { useQuizTemplate } from "../hooks/useQuizTemplate";
+import { useQuiz } from "../hooks/useQuiz";
+import { useChildSession } from "../hooks/useChildSession";
+import axios from "axios";
+
 
 export default function CreatePage() {
   const { t } = useTranslation();
@@ -20,7 +24,7 @@ export default function CreatePage() {
   const location = useLocation();
   const { createQuizTemplate } = useQuizTemplate();
   const [questions, setQuestions] = useState([]);
-
+  const [questionStats, setQuestionStats] = useState([]); 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
@@ -31,7 +35,23 @@ export default function CreatePage() {
   });
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [randomQuestionCount, setRandomQuestionCount] = useState(0);
-  const child_id = '64a2c4a5b7e2d5e37e9fc314'; // Add your actual child_id
+  const [childId, setChildId] = useState(null);
+  const [studyLevel, setStudyLevel] = useState(null); // Add your actual childId
+  const { fetchStats } = useQuiz();
+  useEffect(() => {
+    const fetchChildIdFromSession = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/Child/session", {
+          withCredentials: true, // Ensure cookies are sent
+        });
+        setChildId(res.data.childId);
+        setStudyLevel(res.data.studyLevel); 
+        console.log("retrieved child: " + childId)
+      } catch (err) {
+        console.error("Error fetching childId from session:", err);      }
+    };
+    fetchChildIdFromSession();
+  }, []);
 
   const {
     query,
@@ -50,7 +70,6 @@ export default function CreatePage() {
     selectedSubjects,
     selectedChapters,
     selectedQuestionCount,
-    selectedQuizTypes,
     onSubjectsChange,
     onChaptersChange,
     onQuestionCountChange,
@@ -72,12 +91,17 @@ export default function CreatePage() {
     try {
       const level = "Primary"; // adjust this as needed
       const response = await fetchAllQuestions(level, page, activeFilters, 24);
-      console.log("response", response.data);
       setQuestions(response.data);
       setTotalItems(response.total);
       setSearchItems(response.data);
+      
+      // Fetch stats for the new questions immediately
+      if (response.data.length > 0) {
+        const stats = await fetchStats(response.data, childId);
+        setQuestionStats(stats);
+      }
     } catch (error) {
-      console.error("Failed to fetch questions:", error);
+      console.error("Failed to fetch questions or stats:", error);
     } finally {
       setLoading(false);
     }
@@ -85,7 +109,7 @@ export default function CreatePage() {
 
   useEffect(() => {
     fetchPageData(currentPage);
-  }, [currentPage, location.search, activeFilters]);
+  }, [currentPage, location.search, activeFilters,childId]);
 
   const handleApplyFilters = (filters) => {
     setActiveFilters({
@@ -124,7 +148,7 @@ export default function CreatePage() {
       const quizTemplatePayload = {
         title: 'Custom Quiz',
         module: location.state?.module_id || null,
-        child: child_id,
+        child: childId,
         questions: selectedQuestions,
         chapters: activeFilters.selectedChapters,
       };
@@ -196,14 +220,18 @@ export default function CreatePage() {
           {loading ? (
             <Spinner />
           ) : displayItems.length > 0 ? (
-            displayItems.map((q, idx) => (
-              <QuestionSelectionCard
-                key={idx}
-                questionText={q.questionText}
-                isSelected={selectedQuestions.includes(q._id)}
-                onToggle={() => toggleQuestionSelection(q._id)}
-              />
-            ))
+            displayItems.map((q, idx) => {
+              const stats = questionStats.find((stat) => stat.questionId === q._id) || {};
+              return (
+                <QuestionSelectionCard
+                  key={idx}
+                  questionText={q.questionText}
+                  stats={stats}
+                  isSelected={selectedQuestions.includes(q._id)}
+                  onToggle={() => toggleQuestionSelection(q._id)}
+                />
+              );
+            })
           ) : (
             <div className="col-span-full text-center text-gray-500">
               No items found

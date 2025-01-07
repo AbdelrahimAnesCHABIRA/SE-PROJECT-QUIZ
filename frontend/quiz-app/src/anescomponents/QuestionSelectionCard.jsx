@@ -24,23 +24,23 @@ export const QuestionSelectionCard = ({
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-2 text-gray-600">
               <Brain size={16} />
-              <span>{/*stats.numAnswered||*/2} attempts</span>
+              <span>{stats.numAnswered} attempts</span>
             </div>
             
             <div className="flex items-center gap-2 text-gray-600">
               <Trophy size={16} />
-              <span>{/*stats.highestScore*/2} max score</span>
+              <span>{stats.highestScore} max score</span>
             </div>
           </div>
         </div>
         <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-          // stats.avgScore >= 4
-          //   ? "bg-green-100 text-green-700"
-          //   : stats.avgScore >= 2
-          //   ? "bg-yellow-100 text-yellow-700"
-          //   : "bg-red-100 text-red-700"
-        "bg-red-100 text-red-700"}`}>
-          {/*stats.avgScore*/}
+          stats.avgScore >= 4
+            ? "bg-green-100 text-green-700"
+            : stats.avgScore >= 2
+            ? "bg-yellow-100 text-yellow-700"
+            : "bg-red-100 text-red-700"
+        }`}>
+          {stats.avgScore}
         </div>
       </div>
     </button>
