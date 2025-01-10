@@ -73,7 +73,6 @@ const ChooseChildPage = () => {
     formData.append('firstName', firstName);
     formData.append('lastName', lastName);
     formData.append('studyLevel', year);
-    formData.append('image', image); // Attach the image file
 
     try {
       const response = await fetch('http://localhost:5000/api/Child', {

@@ -6,6 +6,7 @@ export const useChildSession = () => {
   const [studyLevel, setStudyLevel] = useState(null);
   const [sessionError, setSessionError] = useState(null);
   const [sessionLoading, setSessionLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchChildIdFromSession = async () => {
@@ -15,7 +16,7 @@ export const useChildSession = () => {
         });
         setChildId(res.data.childId);
         setStudyLevel(res.data.studyLevel);
-        console.log("child retrieved: " + childId);
+        setUserId(res.data.userId);
         setSessionError(null);
       } catch (err) {
         console.error("Error fetching childId from session:", err);
@@ -28,5 +29,5 @@ export const useChildSession = () => {
     fetchChildIdFromSession();
   }, []);
 
-  return { childId, studyLevel, sessionError, sessionLoading };
+  return {userId, childId, studyLevel, sessionError, sessionLoading };
 };

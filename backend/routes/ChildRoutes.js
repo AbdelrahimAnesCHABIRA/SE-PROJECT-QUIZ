@@ -49,13 +49,13 @@ router.get('/session', async (req, res) => {
     res.status(200).json({ userId: userId, childId: childId, studyLevel: studyLevel });
 });
 
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', async (req, res) => {
     try {
       const { userId, firstName, lastName, studyLevel } = req.body;
-    
+     
       
       // Get the URL of the uploaded image from Cloudinary
-      const imageUrl = req.file.path || req.file.url;
+      const imageUrl = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
       // Create a new child in the database
       const newChild = new Child({
         userId,
