@@ -2,8 +2,9 @@ import { useModule } from './useModule';
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
-export const useFilters = () => {
-  const level = "Primary";
+export const useFilters = (level, childId) => {
+  console.log("the level passed to usefilters : "+ level);
+  console.log("the child id passed to usefilters: " + childId);
   const { modules, loading: modulesLoading } = useModule(level);
 
   const [subjects, setSubjects] = useState([]);
@@ -12,7 +13,7 @@ export const useFilters = () => {
   const [selectedQuestionCount, setSelectedQuestionCount] = useState([]);
   const [allChaptersData, setAllChaptersData] = useState({});
 
-  const childId = '64a2c4a5b7e2d5e37e9fc314';
+
 
   // Transform modules into subjects
   useEffect(() => {

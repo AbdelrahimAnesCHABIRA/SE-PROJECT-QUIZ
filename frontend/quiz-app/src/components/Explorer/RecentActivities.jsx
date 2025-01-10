@@ -9,17 +9,16 @@ import axios from 'axios';
 export const RecentActivities = () => {
   const { t } = useTranslation();
   const [childId, setChildId] = useState(null);
-  const [studyLevel, setStudyLevel] = useState(null); 
+  const [studyLevel, setStudyLevel] = useState(null);
   const [quizzes, setQuizzes] = useState([]);
   const [sessionError, setSessionError] = useState(null);
   const { fetchQuizTemplatesByChildId, loading, error } = useQuizTemplate();
   const handleBoxClick = useHandleBoxClick();
 
-  // Combine fetching childId and quizzes into one useEffect
+  // Fetch session data on component mount
   useEffect(() => {
-    const fetchSessionAndQuizzes = async () => {
+    const fetchSessionData = async () => {
       try {
-        // Fetch session data
         const sessionRes = await axios.get("http://localhost:5000/api/Child/session", {
           withCredentials: true, // Ensure cookies are sent
         });
@@ -27,20 +26,33 @@ export const RecentActivities = () => {
         setChildId(fetchedChildId);
         setStudyLevel(sessionRes.data.studyLevel);
         setSessionError(null);
-
-        // Fetch quizzes
-        const fetchedQuizzes = await fetchQuizTemplatesByChildId(fetchedChildId, 1);
-        if (fetchedQuizzes) {
-          setQuizzes(fetchedQuizzes);
-        }
       } catch (err) {
-        console.error("Error:", err);
-        setSessionError(err.response?.data?.error || "Unable to fetch session or quizzes data");
+        console.error("Error fetching session data:", err);
+        setSessionError(err.response?.data?.error || "Unable to fetch session data");
       }
     };
 
-    fetchSessionAndQuizzes();
+    fetchSessionData();
   }, []); // Only run once on mount
+
+  // Fetch quizzes whenever `childId` changes
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      if (childId) {
+        try {
+          const fetchedQuizzes = await fetchQuizTemplatesByChildId(childId, 1);
+          if (fetchedQuizzes) {
+            setQuizzes(fetchedQuizzes);
+          }
+        } catch (err) {
+          console.error("Error fetching quizzes:", err);
+          setSessionError(err.response?.data?.error || "Unable to fetch quizzes data");
+        }
+      }
+    };
+
+    fetchQuizzes();
+  }, [childId]); // Run whenever `childId` changes
 
   // Handle errors
   if (loading) return <div>Loading...</div>;

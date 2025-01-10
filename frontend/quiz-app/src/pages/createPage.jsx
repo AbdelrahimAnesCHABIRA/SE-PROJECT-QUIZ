@@ -36,7 +36,7 @@ export default function CreatePage() {
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [randomQuestionCount, setRandomQuestionCount] = useState(0);
   const [childId, setChildId] = useState(null);
-  const [studyLevel, setStudyLevel] = useState(null); // Add your actual childId
+  const [studyLevel, setStudyLevel] = useState(null);
   const { fetchStats } = useQuiz();
   useEffect(() => {
     const fetchChildIdFromSession = async () => {
@@ -46,7 +46,6 @@ export default function CreatePage() {
         });
         setChildId(res.data.childId);
         setStudyLevel(res.data.studyLevel);
-        console.log("retrieved child: " + childId);
       } catch (err) {
         console.error("Error fetching childId from session:", err);
       }
@@ -75,7 +74,7 @@ export default function CreatePage() {
     onChaptersChange,
     onQuestionCountChange,
     getSelectedFilterLabels,
-  } = useFilters();
+  } = useFilters(studyLevel, childId);
   const displayItems = Array.isArray(query ? searchResults : questions)
     ? query
       ? searchResults
@@ -92,7 +91,7 @@ export default function CreatePage() {
     setLoading(true);
     try {
       const level = "Primary"; // adjust this as needed
-      const response = await fetchAllQuestions(level, page, activeFilters, 24);
+      const response = await fetchAllQuestions(studyLevel, page, activeFilters, 24);
       setQuestions(response.data);
       setTotalItems(response.total);
       setSearchItems(response.data);
