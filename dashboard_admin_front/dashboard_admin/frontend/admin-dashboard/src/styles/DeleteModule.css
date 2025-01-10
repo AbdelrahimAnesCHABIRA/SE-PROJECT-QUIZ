@@ -1,0 +1,92 @@
+/* Container Styling */
+.delete-module-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 255, 0.5);
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  color: #333;
+}
+
+.delete-module-container h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #d32f2f; /* Red */
+}
+
+/* Form Styling */
+.delete-module-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.delete-module-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+}
+
+.delete-module-form input,
+.delete-module-form select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.delete-module-form input:focus,
+.delete-module-form select:focus {
+  border-color: #1a73e8;
+  box-shadow: 0px 4px 10px rgba(0, 0, 255, 0.3);
+  outline: none;
+}
+
+/* Button Styling */
+.delete-btn {
+  background-color: #d32f2f;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #b71c1c;
+}
+
+.cancel-btn {
+  background-color: #757575;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  margin-right: 700px;
+}
+
+.cancel-btn:hover {
+  background-color: #424242;
+}
+
+/* Button Group Styling */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}

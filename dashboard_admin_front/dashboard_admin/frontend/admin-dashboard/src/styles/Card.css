@@ -1,0 +1,113 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 320px;
+  height: 120px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  direction: rtl; /* Arabic text direction */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+}
+
+.card:hover {
+  transform: scale(1.05); /* Slightly enlarge */
+  box-shadow: 0px 4px 12px rgba(173, 216, 230, 0.5); /* Light blue shadow */
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.card-icon {
+  width: 50px;
+  height: 50px;
+  background-color: #007bff;
+  border-radius: 50%;
+  color: white;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  text-align: left; /* Number stays on top-left */
+  align-self: flex-start;
+}
+
+.card-text {
+  font-size: 16px;
+  color: #666;
+  margin-top: auto; /* Move text to the bottom */
+  text-align: left; /* Align text to the left-bottom of the card */
+}
+
+/* Title and Line Styles */
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.title-line {
+  flex-grow: 1;
+  height: 2px;
+  background-color: #007bff;
+  margin-left: 10px;
+}
+
+/* Floating Action Button Hover */
+.fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-right: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.fab.add {
+  background-color: #007bff; /* Blue */
+}
+
+.fab.add:hover {
+  background-color: #0056b3; /* Darker Blue */
+}
+
+.fab.edit {
+  background-color: #9370db; /* Light Purple */
+}
+
+.fab.edit:hover {
+  background-color: #6a5acd; /* Darker Purple */
+}
+
+.fab.delete {
+  background-color: #dc143c; /* Red */
+}
+
+.fab.delete:hover {
+  background-color: #a3001b; /* Darker Red */
+}
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 12px rgba(0, 123, 255, 0.3);
+  }
+  

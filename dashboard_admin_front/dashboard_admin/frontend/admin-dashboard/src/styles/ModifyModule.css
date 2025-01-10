@@ -1,0 +1,120 @@
+/* src/styles/ModifyModule.css */
+
+.modify-module-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 255, 0.5);
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  color: #333;
+}
+
+.modify-module-container h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #1a73e8; /* Marine Blue */
+}
+
+.module-list {
+  margin-bottom: 20px;
+}
+
+.module-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.module-list li {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.module-list li.selected {
+  background-color: #e0f7fa;
+}
+
+.module-editor {
+  padding: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.module-editor label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.module-editor input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.actions {
+  margin-top: 10px;
+}
+
+.update-btn,
+.delete-btn,
+.chapter-delete-btn,
+.add-chapter-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 255, 0.5);
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+/* Update Button Styling */
+.update-btn {
+  background-color: #1a73e8;
+  color: white;
+  margin-right: 10px;
+}
+
+.update-btn:hover {
+  background-color: #1557b2;
+  box-shadow: 0px 6px 15px rgba(0, 0, 255, 0.7);
+}
+
+/* Delete Button Styling */
+.delete-btn,
+.chapter-delete-btn {
+  background-color: #1a73e8; /* Marine Blue */
+  color: white;
+}
+
+.delete-btn:hover,
+.chapter-delete-btn:hover {
+  background-color: #1557b2;
+  box-shadow: 0px 6px 15px rgba(0, 0, 255, 0.7);
+}
+
+/* Add Chapter Button Styling */
+.add-chapter-btn {
+  background-color: #1a73e8;
+  color: white;
+  padding: 8px 16px;
+  margin-top: 10px;
+}
+
+.add-chapter-btn:hover {
+  background-color: #1557b2;
+  box-shadow: 0px 6px 15px rgba(0, 0, 255, 0.7);
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
