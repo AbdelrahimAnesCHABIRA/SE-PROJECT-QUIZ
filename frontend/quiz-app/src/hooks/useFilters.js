@@ -6,7 +6,6 @@ export const useFilters = (level, childId) => {
   // console.log("the level passed to usefilters : "+ level);
   // console.log("the child id passed to usefilters: " + childId);
   const { modules, loading: modulesLoading } = useModule(level);
-
   const [subjects, setSubjects] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [selectedChapters, setSelectedChapters] = useState([]);
@@ -16,9 +15,9 @@ export const useFilters = (level, childId) => {
 
   useEffect(() => {
     if (modules && modules.length > 0) {
-      const transformedSubjects = modules.map(module => ({
-        value: module._id,
-        label: module.moduleName
+      const transformedSubjects = modules.map(module => ({ 
+        value: module,
+        label: module.moduleName,
       }));
       setSubjects(transformedSubjects);
     }
@@ -29,13 +28,13 @@ export const useFilters = (level, childId) => {
     const loadAllChapters = async () => {
       const newChaptersData = {};
 
-      for (const moduleId of selectedSubjects) {
+      for (const module of selectedSubjects) {
         try {
           const res = await axios.get(
-            `http://localhost:5000/api/Chapters?module_id=${moduleId}&child_id=${childId}`
+            `http://localhost:5000/api/Chapters?module_id=${module._id}&child_id=${childId}`
           );
-          if (res.data && Array.isArray(res.data)) {
-            newChaptersData[moduleId] = res.data.map(chapter => ({
+          if (res.data && Array.isArray(res.data)) { 
+            newChaptersData[module._id] = res.data.map(chapter => ({
               value: chapter._id,
               label: chapter.chapterName,
               moduleId: chapter.moduleId

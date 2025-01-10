@@ -17,11 +17,7 @@ export const FilterPanel = ({
   onApplyFilters,
 }) => {
   const handleApplyFilters = () => {
-    console.log("Applying filters:", {
-      selectedSubjects,
-      selectedChapters,
-      questionCount,
-    });
+
     onApplyFilters({
       selectedSubjects,
       selectedChapters,
@@ -30,6 +26,7 @@ export const FilterPanel = ({
     onClose();
   };
 
+  console.log(selectedSubjects[0] ? selectedSubjects[0]._id : '');
   const { t } = useTranslation();
   const location = useLocation();
 

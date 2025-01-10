@@ -6,16 +6,17 @@ const router = express.Router();
 // Create a new QuizTemplate
 router.post('/', async (req, res) => {
     try {
-        const { title, module, child, questions, chapters } = req.body;
+        const { title, module, child, questions, chapters, imageUrl } = req.body;
         const newQuizTemplate = new QuizTemplate({
             title,
             module,
             child,
             questions,
             chapters,
+            imageUrl,
             playedCount: 1, // Default value
             progress: 0, // Default value
-            scores: [] // Default value
+            scores: [],// Default value
         });
         await newQuizTemplate.save();
         res.status(201).json(newQuizTemplate);
