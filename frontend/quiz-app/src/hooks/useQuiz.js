@@ -121,13 +121,13 @@ export const useQuiz = () => {
     }
   };
 
-  const fetchQuizInstances = async (quizTemplate_id) => {
+  const fetchQuizInstances = async (quizTemplate_id,tryNum) => {
     setLoading(true);
     const source = axios.CancelToken.source();
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/Quiz?fullquiz_id=${quizTemplate_id}`,
+       `http://localhost:5000/api/Quiz?fullquiz_id=${quizTemplate_id}&tryNum=${tryNum}`,
         {
           cancelToken: source.token,
           timeout: TIMEOUT

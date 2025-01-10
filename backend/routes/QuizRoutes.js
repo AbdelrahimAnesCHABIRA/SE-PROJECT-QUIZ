@@ -37,15 +37,24 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const { fullquiz_id, child_id, question_id, tryNum } = req.query; 
+        const { fullquiz_id, child_id, question_id, tryNum } = req.query;
 
         const query = {};
-        if (fullquiz_id) query.fullquiz_id = fullquiz_id; 
-        if (child_id) query.child_id = child_id; 
-        if(question_id) query.question_id = question_id;
-        if(tryNum) query.tryNum = tryNum;
+        if (fullquiz_id) query.fullquiz_id = fullquiz_id;
+        if (child_id) query.child_id = child_id;
+        if (question_id) query.question_id = question_id;
+        if (tryNum && tryNum !== '-1') query.tryNum = tryNum;
 
-        const quizzes = await Quiz.find(query).populate('question_id'); 
+        let quizzes;
+        if (tryNum === '-1') {
+            const maxQuiz = await Quiz.findOne(query).sort({ tryNum: -1 }).limit(1);
+            if (!maxQuiz) {
+                return res.status(404).send('No quizzes found.');
+            }
+            quizzes = await Quiz.find({ ...query, tryNum: maxQuiz.tryNum }).populate('question_id');
+        } else {
+            quizzes = await Quiz.find(query).populate('question_id');
+        }
         res.status(200).json(quizzes);
     } catch (error) {
         console.error(error);
