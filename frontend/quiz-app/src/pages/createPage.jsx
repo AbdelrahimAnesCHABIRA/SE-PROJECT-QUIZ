@@ -82,13 +82,11 @@ export default function CreatePage() {
       ? searchResults
       : questions
     : [];
-
   const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setCurrentPage(page); 
+    window.scrollTo({ top: 0, behavior: "smooth" }); 
   };
-
-  const fetchPageData = async (page) => {
+  const fetchPageData = async (page) => { 
     setLoading(true);
     try {
       const response = await fetchAllQuestions(studyLevel, page, activeFilters, 24);
@@ -172,10 +170,11 @@ export default function CreatePage() {
 
       const quizTemplatePayload = {
         title: "Custom Quiz",
-        module: activeFilters.selectedSubjects,
+        module: activeFilters.selectedSubjects[0]._id,
         child: childId,
         questions: selectedQuestions,
-        chapters: chaptersForQuiz, // Use either selected chapters or fetched chapters
+        chapters: chaptersForQuiz,
+        imageUrl: activeFilters.selectedSubjects[0].imageUrl ? activeFilters.selectedSubjects[0].imageUrl : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
       };
 
       const quizTemplate = await createQuizTemplate(quizTemplatePayload);
@@ -204,6 +203,7 @@ export default function CreatePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
+      <h1>the selected modules {activeFilters.selectedChapters}</h1>
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">

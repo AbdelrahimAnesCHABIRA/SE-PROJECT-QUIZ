@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,6 +9,10 @@ export const useModule = (studyLevel) => {
     const fetchModules = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/Modules?level=${studyLevel}`);
+        
+        // Log the entire object to inspect the response
+        console.log("here00", response.data);
+        
         setModules(response.data || []);
       } catch (error) {
         console.error("Error fetching modules:", error);
@@ -18,10 +21,11 @@ export const useModule = (studyLevel) => {
         setLoading(false);
       }
     };
+
     fetchModules();
   }, [studyLevel]);
 
-  return {
+  return { 
     modules,
     loading,
   };

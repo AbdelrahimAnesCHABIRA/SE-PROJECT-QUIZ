@@ -15,6 +15,7 @@ const quizTemplateSchema = new mongoose.Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter', required: true }, // Array of chapter references
   ],
   module: { type: mongoose.Schema.Types.ObjectId, ref: 'Module', required: true },
+  imageUrl: {type: String, required: false},
 });
 
 module.exports = mongoose.model('QuizTemplate', quizTemplateSchema);
