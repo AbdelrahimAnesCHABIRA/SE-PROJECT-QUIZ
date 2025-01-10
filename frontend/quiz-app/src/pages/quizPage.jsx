@@ -12,7 +12,7 @@ const QuizPage = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [scores, setScores] = useState([]); // To track scores for each question
     const [selectedScore, setSelectedScore] = useState(null); // Track the selected score for the current question
-    const childId = '677b94ad15ee1822026947aa'; // Example constant child ID
+    const childId = '677ba6d098d31c52ae790a31'; // Example constant child ID
     const navigate = useNavigate();
     const [isAnswered, setIsAnswered] = useState(false);
     const [quizTemplate, setQuizzTemplate] = useState(null);
