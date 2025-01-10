@@ -14,8 +14,6 @@ export const useFilters = (level, childId) => {
   const [allChaptersData, setAllChaptersData] = useState({});
 
 
-
-  // Transform modules into subjects
   useEffect(() => {
     if (modules && modules.length > 0) {
       const transformedSubjects = modules.map(module => ({

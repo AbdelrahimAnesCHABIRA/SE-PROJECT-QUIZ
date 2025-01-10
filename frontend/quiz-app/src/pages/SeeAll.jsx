@@ -14,8 +14,10 @@ import {
   fetchRecentQuizzes, 
   fetchRecentFilteredQuizzes, 
 } from '../services/sectionDataService';
+import { useChildSession } from '../hooks/useChildSession';
 
 export default function SeeAll() {
+  const {userId, childId, studyLevel, sessionError, sessionLoading } = useChildSession();
   const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -57,8 +59,6 @@ export default function SeeAll() {
   const fetchPageData = async (page) => {
     setLoading(true);
     try {
-      const childId = '64a2c4a5b7e2d5e37e9fc314';
-      
       const response = activeFilters 
         ? await fetchRecentFilteredQuizzes(childId, page, activeFilters)
         : await fetchRecentQuizzes(childId, page);
@@ -71,11 +71,14 @@ export default function SeeAll() {
     } finally {
       setLoading(false);
     }
-  };
+  }; 
 
   useEffect(() => {
-    fetchPageData(currentPage);
-  }, [currentPage, location.search, activeFilters]);
+    // Only fetch data when childId is available and session is no longer loading
+    if (!sessionLoading && childId) {
+      fetchPageData(currentPage);
+    }
+  }, [currentPage, location.search, activeFilters, childId, sessionLoading]);
 
   const handleApplyFilters = (filters) => {
     setActiveFilters(filters);
@@ -87,6 +90,7 @@ export default function SeeAll() {
   const finalTotalPages = query ? searchTotalPages : Math.ceil(totalItems / 12);
 
   return (
+
     <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">

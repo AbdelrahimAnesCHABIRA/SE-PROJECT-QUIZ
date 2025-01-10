@@ -17,7 +17,7 @@ export const ChildCard = ({ Child, onDelete, onClick }) => {
       <div className="relative h-48 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
         <img
-          src={Child.profilePicture}
+          src={Child.imageUrl}
           alt={Child.firstName}
           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
         />
