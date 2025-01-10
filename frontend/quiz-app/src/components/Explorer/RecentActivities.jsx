@@ -15,37 +15,32 @@ export const RecentActivities = () => {
   const { fetchQuizTemplatesByChildId, loading, error } = useQuizTemplate();
   const handleBoxClick = useHandleBoxClick();
 
-  // Fetch the childId from the session
+  // Combine fetching childId and quizzes into one useEffect
   useEffect(() => {
-    const fetchChildIdFromSession = async () => {
+    const fetchSessionAndQuizzes = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/Child/session", {
+        // Fetch session data
+        const sessionRes = await axios.get("http://localhost:5000/api/Child/session", {
           withCredentials: true, // Ensure cookies are sent
         });
-        
-        setChildId(res.data.childId);
-        console.log("here"+childId)
-        setStudyLevel(res.data.studyLevel); 
+        const fetchedChildId = sessionRes.data.childId;
+        setChildId(fetchedChildId);
+        setStudyLevel(sessionRes.data.studyLevel);
         setSessionError(null);
-      } catch (err) {
-        console.error("Error fetching childId from session:", err);
-        setSessionError(err.response?.data?.error || "Unable to fetch session data");
-      }
-    };
-    fetchChildIdFromSession();
-  }, []);
 
-  // Fetch quizzes based on childId
-  useEffect(() => {
-    const loadQuizzes = async () => {
-      if (!childId) return; // Don't fetch quizzes if childId is null
-      const fetchedQuizzes = await fetchQuizTemplatesByChildId(childId, 1);
-      if (fetchedQuizzes) {
-        setQuizzes(fetchedQuizzes);
+        // Fetch quizzes
+        const fetchedQuizzes = await fetchQuizTemplatesByChildId(fetchedChildId, 1);
+        if (fetchedQuizzes) {
+          setQuizzes(fetchedQuizzes);
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        setSessionError(err.response?.data?.error || "Unable to fetch session or quizzes data");
       }
     };
-    loadQuizzes();
-  }, [childId]);
+
+    fetchSessionAndQuizzes();
+  }, []); // Only run once on mount
 
   // Handle errors
   if (loading) return <div>Loading...</div>;

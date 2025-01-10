@@ -45,6 +45,7 @@ router.get('/session', async (req, res) => {
 
     const userId = req.session.userId;
     const childId = req.session.childId;
+    const studyLevel = req.session.studyLevel;
     res.status(200).json({ userId: userId, childId: childId });
 });
 

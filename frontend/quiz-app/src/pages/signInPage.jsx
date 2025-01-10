@@ -4,8 +4,10 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import { ar } from '../translations/ar';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -71,7 +73,7 @@ const SignIn = () => {
             const data = await response.json();
             if (response.ok) {
                 // Handle successful login
-                alert('Login successful!');
+                navigate("/chooseChild");
                 // Redirect user or store authentication token in localStorage or cookies here
             } else {
                 setErrorMessage(data.error || 'Invalid email or password');
