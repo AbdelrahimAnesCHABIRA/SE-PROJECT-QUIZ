@@ -14,6 +14,7 @@ import { InputField } from "../anescomponents/InputField";
 import Button from "../anescomponents/Button";
 import { useQuizTemplate } from "../hooks/useQuizTemplate";
 import { useQuiz } from "../hooks/useQuiz";
+import { useQuestion } from "../hooks/useQuestion";
 import { useChildSession } from "../hooks/useChildSession";
 import axios from "axios";
 
@@ -38,6 +39,7 @@ export default function CreatePage() {
   const [childId, setChildId] = useState(null);
   const [studyLevel, setStudyLevel] = useState(null);
   const { fetchStats } = useQuiz();
+  const { fetchChaptersIdByQuestionId } = useQuestion();
   useEffect(() => {
     const fetchChildIdFromSession = async () => {
       try {
@@ -87,10 +89,8 @@ export default function CreatePage() {
   };
 
   const fetchPageData = async (page) => {
-    console.log("activeFilters: ", activeFilters);
     setLoading(true);
     try {
-      const level = "Primary"; // adjust this as needed
       const response = await fetchAllQuestions(studyLevel, page, activeFilters, 24);
       setQuestions(response.data);
       setTotalItems(response.total);
@@ -142,6 +142,17 @@ export default function CreatePage() {
     setSelectedQuestions(randomizedSelection);
   };
 
+  // useEffect(() => {
+  //   if (selectedQuestions.length > 0) {
+  //     fetchChaptersIdByQuestionId(selectedQuestions).then((chapters) => {
+  //       setActiveFilters((prev) => ({
+  //         ...prev,
+  //         selectedChapters: [...new Set(chapters.map((c) => c.chapter_id))],
+  //       }));
+  //     });
+  //   }
+  // }, [selectedQuestions]);
+
   const startQuiz = async () => {
     if (selectedQuestions.length === 0) {
       alert("Please select at least one question to start the quiz.");
@@ -149,12 +160,22 @@ export default function CreatePage() {
     }
 
     try {
+      // Get chapters either from active filters or fetch from selected questions
+      let chaptersForQuiz = activeFilters.selectedChapters;
+      if (chaptersForQuiz.length === 0) {
+        console.log("Fetching chapters from selected questions");
+        console.log("Selected questions:", selectedQuestions);
+        const chaptersFromQuestions = await fetchChaptersIdByQuestionId(selectedQuestions);
+        chaptersForQuiz = [...new Set(chaptersFromQuestions)]; // Remove duplicates
+        console.log("Chapters from questions:", chaptersForQuiz);
+      }
+
       const quizTemplatePayload = {
         title: "Custom Quiz",
         module: activeFilters.selectedSubjects,
-        child: childId || "677ba6d098d31c52ae790a31",
+        child: childId,
         questions: selectedQuestions,
-        chapters: activeFilters.selectedChapters,
+        chapters: chaptersForQuiz, // Use either selected chapters or fetched chapters
       };
 
       const quizTemplate = await createQuizTemplate(quizTemplatePayload);

@@ -48,10 +48,37 @@ export const useQuestion = () => {
       setLoading(false);
     }
   };
+  const fetchChaptersIdByQuestionId = async (questionIds) => {
+    setLoading(true);
+    const allChaptersIds = [];
+  
+    try {
+      for (const _id of questionIds) {
+        const response = await axios.get(`http://localhost:5000/api/Questions?_id=${_id}`);
+        if (response.status === 200 && response.data.length > 0) {
+          // Assuming each question has a chapter_id field
+          const question = response.data[0];
+          console.log('Question:', question);
+          if (question.chapterId) {
+            allChaptersIds.push(question.chapterId);
+          }
+        }
+      }
+      setError(null);
+      return [...new Set(allChaptersIds)]; // Return unique chapter IDs
+    } catch (err) {
+      setError('Failed to fetch chaptersIds');
+      console.error('Failed to fetch chaptersIds', err);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
   
   return {
     fetchQuestionsByTemplate,
     fetchQuestionsByChapters,
+    fetchChaptersIdByQuestionId,
     loading,
     error
   };
