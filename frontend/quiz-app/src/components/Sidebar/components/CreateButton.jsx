@@ -5,7 +5,7 @@ export const CreateButton = ({ isCollapsed }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const handleCreateClick = () => {
-    navigate('/');
+    navigate('/create');
   }
   
   return (
