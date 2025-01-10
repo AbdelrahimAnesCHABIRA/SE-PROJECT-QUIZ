@@ -1,0 +1,91 @@
+/* Container Styling */
+.edit-module-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 255, 0.5);
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  color: #333;
+}
+
+.edit-module-container h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #1a73e8; /* Marine Blue */
+}
+
+/* Form Styling */
+.edit-module-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #1a73e8;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #1a73e8;
+  box-shadow: 0px 4px 10px rgba(0, 0, 255, 0.3);
+  outline: none;
+}
+
+/* Button Styling */
+.submit-btn,
+.stop-btn {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.submit-btn {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #1557b2;
+}
+
+.stop-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.stop-btn:hover {
+  background-color: #ba000d;
+}
+
+/* Button Group Styling */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}

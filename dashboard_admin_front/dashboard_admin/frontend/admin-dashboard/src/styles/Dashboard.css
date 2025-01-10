@@ -1,0 +1,108 @@
+/* General Styles */
+.dashboard {
+    padding: 20px;
+    direction: rtl;
+    font-family: "Arial", sans-serif;
+  }
+  
+  .dashboard-header {
+    text-align: right;
+    margin-bottom: 100px;
+  }
+  
+  .dashboard-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+  
+  .title-divider {
+    width: 150px;
+    height: 5px;
+    background-color: #007bff;
+    margin-top: 5px;
+    border-radius: 5px;
+    position: absolute;
+    right: 15px;
+  }
+  
+  .dashboard-cards {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next row */
+    gap: 20px; /* Space between cards */
+    flex-direction: row-reverse; /* Reverse the row order for RTL */
+    justify-content: flex-end; /* Align rows starting from the right */
+    direction: rtl; /* Set the container direction explicitly */
+    margin-right:20px ;
+  }
+  /* List Container */
+  .dashboard-options {
+    margin-top: 80px;
+    background: #f1f1f1;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .row-title{
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: right;
+  }
+  .options-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 15px;
+    text-align: right;
+  }
+  
+  /* Row Styles */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 15px 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.row:hover {
+  transform: scale(1.01);
+  box-shadow: 0px 4px 12px rgba(0, 123, 255, 0.3);
+}
+  
+  /* Floating Action Buttons */
+  .row-actions {
+    display: flex;
+    gap: 10px;
+
+  }
+  
+  .action-btn {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+
+  }
+  
+  .action-btn.add {
+    background-color:#007bff !important; /* Blue */
+
+  }
+  
+  .action-btn.edit {
+    background-color: #d6a4ff !important; /* Light Purple */
+  }
+  
+  .action-btn.delete {
+    background-color: #ff6f61 !important; /* Red */
+  }
+  
