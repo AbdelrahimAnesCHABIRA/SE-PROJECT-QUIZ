@@ -50,13 +50,14 @@ export const fetchRecentFilteredQuizzes = async (
 
 export const fetchAllQuestions = async (Level, page, filters = {}, limit = 24) => {
   try {
+    
    
     const response = await axios.get(`http://localhost:5000/api/AllQuestions`, {
       params: {
         studyLevel: Level,
         page,
         limit,
-        subjects: filters?.selectedSubjects?.length ? filters.selectedSubjects.join(",") : undefined,
+        subjects: filters?.selectedSubjects?.length ? filters.selectedSubjects[0]._id : undefined,
         chapters: filters?.selectedChapters?.length ? filters.selectedChapters.join(",") : undefined,
         questionCount: filters?.selectedQuestionCount?.length ? filters.selectedQuestionCount.join(",") : undefined
       },
