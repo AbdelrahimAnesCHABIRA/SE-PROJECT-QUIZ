@@ -39,7 +39,7 @@ const SummaryPage = () => {
       
       try {
         fetchedRef.current = true;
-        const instances = await fetchQuizInstances(quizTemplate_id);
+        const instances = await fetchQuizInstances(quizTemplate_id,-1);
         const processedData = processQuizData(instances);
         setQuizData(processedData);
       } catch (error) {
