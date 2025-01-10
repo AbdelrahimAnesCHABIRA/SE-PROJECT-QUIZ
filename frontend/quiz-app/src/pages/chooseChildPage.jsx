@@ -40,7 +40,7 @@ const ChooseChildPage = () => {
     try{
       await axios.post('http://localhost:5000/api/Child/chooseChild', { childId: childId, studyLevel: studyLevel });
       // Navigate to the next page with the selected child's ID
-      navigate(`/child/${childId}`);
+      navigate(`/explorer`);
     }catch(err){
       console.error("Error saving child ID to session:", err);
       setError("Failed to save child. Please try again.");
