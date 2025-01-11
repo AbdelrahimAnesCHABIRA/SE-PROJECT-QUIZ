@@ -1,20 +1,9 @@
 const mongoose = require('mongoose');
-const Chapter = require('./chapter_model'); // Importing Chapter model
 
-const moduleSchema = mongoose.Schema({
-    moduleName: {
-        type: String,
-        required: [true, "Module name is required"],
-    },
-    studyLevel: {
-        type: String,
-        required: [true, "Study level is required"],
-    },
-    chapters: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Chapter', // Referencing the Chapter model
-        default: [],
-    },
+const moduleSchema = new mongoose.Schema({
+  moduleName: { type: String, required: true },
+  studyLevel: { type: String, required: true },
+  imageUrl: {type: String, required: false},
 });
 
-module.exports = mongoose.model("Module", moduleSchema);
+module.exports = mongoose.model('Module', moduleSchema);

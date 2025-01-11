@@ -39,11 +39,11 @@ const DeleteModule = ({ onClose }) => {
             onChange={(e) => setStudyLevel(e.target.value)}
           >
             <option value="">اختر المستوى الدراسي</option>
-            <option value="Primary">ابتدائي</option>
-            <option value="Secondary">إعدادي</option>
-            <option value="Highschool">ثانوي</option>
-            <option value="University">جامعي</option>
-            <option value="Other">أخرى</option>
+            <option value="الاولى إبتدائي">الاولى إبتدائي</option>
+            <option value="الثانية إبتدائي">الثانية إبتدائي</option>
+            <option value="الثالثة إبتدائي">الثالثة إبتدائي</option>
+            <option value="الرابعة إبتدائي">الرابعة إبتدائي</option>
+            <option value="الخامسة إبتدائي">الخامسة إبتدائي</option>
           </select>
         </label>
         <div className="buttons">
