@@ -10,9 +10,6 @@ export const useModule = (studyLevel) => {
       try {
         const response = await axios.get(`http://localhost:5000/api/Modules?level=${studyLevel}`);
         
-        // Log the entire object to inspect the response
-        console.log("here00", response.data);
-        
         setModules(response.data || []);
       } catch (error) {
         console.error("Error fetching modules:", error);

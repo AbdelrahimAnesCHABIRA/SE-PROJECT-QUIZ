@@ -1,4 +1,4 @@
-import {BrowserRouter, Routes, Route} from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import DisplayLevels from './pages/selectLevelPage';
 import ModulesPage from './pages/modulesPage';
 import ChaptersPage from './pages/chaptersPage';
@@ -21,7 +21,11 @@ import Rapports from "./pages/Rapports";
 import Classes from "./pages/Classes";
 import CreatePage from "./pages/createPage";
 import SessionTester from "./pages/testChildSession";
+
 import i18n from './i18n/i18n';
+
+
+import StatisticsPage from "./pages/Rapports";
 
 
 const App = () => {
@@ -29,7 +33,7 @@ const App = () => {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path ='/' element= {<DisplayLevels />} />
+          <Route path='/' element={<DisplayLevels />} />
           <Route path="/modules/:studyLevel" element={<ModulesPage />} />
           <Route path="/chapters/:module_id" element={<ChaptersPage />} />
           <Route path="/quiz" element={<QuizPage />} />
@@ -113,7 +117,7 @@ const App = () => {
               <div className="flex">
                 <Sidebar />
                 <main className="flex-1 mr-16 md:mr-64 p-5 bg-gray-50 min-h-screen">
-                  <Rapports />
+                  <StatisticsPage />
                 </main>
               </div>
             }

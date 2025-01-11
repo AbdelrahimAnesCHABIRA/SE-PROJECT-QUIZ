@@ -194,12 +194,14 @@ export default function CreatePage() {
   const finalTotalPages = totalPages || Math.ceil(totalItems / 24);
 
   return (
+
    <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header Section */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">
             {t("createPage.title")}
+
           </h1>
           
           {/* Search and Filter Bar */}
