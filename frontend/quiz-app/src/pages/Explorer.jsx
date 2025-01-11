@@ -7,6 +7,7 @@ import { Footer } from '../components/Layout/Footer';
 import { SearchResults } from '../components/Explorer/SearchResults';
 import { useSearch } from '../hooks/useSearch';
 import { useChildSession } from '../hooks/useChildSession';
+import Navbar from '../components/NavBar';
 
 
 export default function Explorer() {
@@ -25,6 +26,7 @@ export default function Explorer() {
 
   return (
     <div className="min-h-screen flex flex-col" dir="rtl">
+      <Navbar/>
       <div className="flex-1 space-y-8 px-4 py-6">
         <SearchBar 
           value={query} 
