@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import {useModule} from './useModule';
 import  useChapters  from './useChapters';
+import { useChildSession } from './useChildSession';
 
 export const useQuizGenerator = () => {
   const [file, setFile] = useState(null);
@@ -10,11 +11,12 @@ export const useQuizGenerator = () => {
   const [QuizName, setQuizName] = useState('Custom Quiz');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { modules: availableModules } = useModule('Primary');
+  
   const [selectedModule, setSelectedModule] = useState('');
   const [selectedChapter, setSelectedChapter] = useState('');
   const [validationError, setValidationError] = useState('');
-  const child_id = '64a2c4a5b7e2d5e37e9fc314';
+  const { childId, studyLevel } = useChildSession();
+  const { modules: availableModules } = useModule(studyLevel);
   
   const { chapters, fetchChaptersBase } = useChapters(selectedModule);
 
@@ -44,7 +46,7 @@ export const useQuizGenerator = () => {
     formData.append('quizName', QuizName);
     formData.append('moduleId', selectedModule);
     formData.append('chapterId', selectedChapter);
-    formData.append('childId', child_id);
+    formData.append('childId', childId);
     formData.append('title', QuizName);
 
     try {

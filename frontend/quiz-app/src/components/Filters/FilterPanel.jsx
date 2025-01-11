@@ -12,8 +12,8 @@ export const FilterPanel = ({
   chapters,
   selectedChapters,
   onChaptersChange,
-  questionCount,
-  onQuestionCountChange,
+
+
   onApplyFilters,
 }) => {
   const handleApplyFilters = () => {
@@ -21,7 +21,6 @@ export const FilterPanel = ({
     onApplyFilters({
       selectedSubjects,
       selectedChapters,
-      selectedQuestionCount: questionCount,
     });
     onClose();
   };
@@ -30,12 +29,6 @@ export const FilterPanel = ({
 
   if (!isOpen) return null;
 
-  const questionCountOptions = [
-    { value: "1-10", label: "1-10" },
-    { value: "11-20", label: "11-20" },
-    { value: "21-30", label: "21-30" },
-    { value: "30+", label: "30+" },
-  ];
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50" onClick={onClose}>
@@ -79,19 +72,6 @@ export const FilterPanel = ({
                 value={selectedChapters}
                 onChange={onChaptersChange}
                 placeholder={t("filters.selectChapters")}
-              />
-            </div>
-          )}
-          {location.pathname !== "/create" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t("filters.questionCount")}
-              </label>
-              <MultiSelect
-                options={questionCountOptions}
-                value={questionCount}
-                onChange={onQuestionCountChange}
-                placeholder={t("filters.selectQuestionCount")}
               />
             </div>
           )}

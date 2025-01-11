@@ -48,10 +48,8 @@ export default function SeeAll() {
     chapters,
     selectedSubjects,
     selectedChapters,
-    selectedQuestionCount,
     onSubjectsChange,
     onChaptersChange,
-    onQuestionCountChange,
     getSelectedFilterLabels
   } = useFilters(studyLevel, childId);
 
@@ -162,8 +160,6 @@ export default function SeeAll() {
           chapters={chapters}
           selectedChapters={selectedChapters}
           onChaptersChange={onChaptersChange}
-          questionCount={selectedQuestionCount}
-          onQuestionCountChange={onQuestionCountChange}
           onApplyFilters={handleApplyFilters}
         />
       </div>

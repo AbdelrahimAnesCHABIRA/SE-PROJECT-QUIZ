@@ -9,7 +9,8 @@ import  Spinner  from '../components/spinner/Spinner';
 import { useChildSession } from '../hooks/useChildSession';
 import { QuizProgressBar } from '../components/quiz/QuizProgressBar';
 import { useChild } from '../hooks/useChild';
-
+import { QuizMenu } from '../components/quiz/QuizMenu';
+import { Menu as MenuIcon } from 'lucide-react';
 const QuizPage = () => {
     const { state } = useLocation(); // Access navigation state
     const { questions, quizTemplate_id } = state || { questions: [], quizTemplate_id: null }; // Extract questions list and FullQuiz ID
@@ -24,6 +25,7 @@ const QuizPage = () => {
     const { createQuizInstance, updateQuizTemplateProgress } = useQuiz();
     const { fetchQuizTemplate } = useQuizTemplate();
     const [hasStarted, setHasStarted] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     
     useEffect(() => {
         const fetchTemplate = async () => {
@@ -118,13 +120,31 @@ const QuizPage = () => {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50">
-            {/* Header with progress bar - fixed height */}
-            <div className="w-full p-4 mb-1">
+        <div className="flex flex-col h-screen bg-gray-50 font-arabic" dir="rtl">
+            {/* Header with progress bar and menu - fixed height */}
+            <div className="w-full p-4 bg-white shadow-sm mb-3">
+                <div className="flex items-center justify-between mb-4">
+                    <div className="text-lg font-semibold text-gray-700">
+                        السؤال {currentQuestionIndex + 1} من {questions.length}
+                    </div>
+                    <button 
+                        onClick={() => setIsMenuOpen(true)} 
+                        className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                        <MenuIcon className="w-6 h-6 text-gray-600" />
+                    </button>
+                </div>
                 <QuizProgressBar current={currentQuestionIndex + 1} total={questions.length} />
             </div>
     
-            {/* Main content - flexible height */}
+            {/* Quiz Menu */}
+            <QuizMenu 
+                isOpen={isMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
+                onSaveAndQuit={() => navigate('/explorer')} 
+            />
+    
+            {/* Main content */}
             <div className="flex-1 overflow-hidden">
                 <div className="h-full overflow-y-auto">
                     <MCQQuestion 
@@ -135,18 +155,19 @@ const QuizPage = () => {
                 </div>
             </div>
     
-            {/* Footer - fixed height */}
+            {/* Footer */}
             <div className="w-full">
                 <BottomBar
                     userName={child.firstName + " " + child.lastName}
                     onNextQuestion={handleNextQuestion}
                     isAnswered={isAnswered}
-                    isLastQuestion={currentQuestionIndex == questions.length - 1}
+                    isLastQuestion={currentQuestionIndex === questions.length - 1}
                     avatarUrl={child.imageUrl}
                 />
             </div>
         </div>
     );
+    
 };
 
 export default QuizPage;

@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchBar } from "../components/Explorer/SearchBar";
 import { ArchiveList } from "../components/Archive/ArchiveList";
-import { FilterPanel } from "../components/Archive/FilterPanel";
+import { FilterPanel } from "../components/Filters/FilterPanel";
+import { FilterButton } from "../components/Filters/FilterButton";
 import { Pagination } from "../components/Pagination/Pagination";
+import { useFilters } from "../hooks/useFilters"; // New import
 
 // Custom hooks
 import { useSearch } from "../hooks/useSearch";
@@ -14,7 +16,9 @@ const ITEMS_PER_PAGE = 12;
 
 export default function Archive() {
   const { t } = useTranslation();
-  const { childId, studyLevel, sessionError, sessionLoading } = useChildSession();
+  const { childId, studyLevel } = useChildSession();
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState(null);
 
   // State
   const [quizzes, setQuizzes] = useState([]);
@@ -22,6 +26,19 @@ export default function Archive() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const {
+    subjects,
+    chapters,
+    selectedSubjects,
+    selectedChapters,
+    onSubjectsChange,
+    onChaptersChange,
+    getSelectedFilterLabels
+  } = useFilters(studyLevel, childId);
+  const handleApplyFilters = (filters) => {
+    setActiveFilters(filters);
+    setCurrentPage(1);
+  };
 
   // Search & filters
   const {
@@ -94,12 +111,11 @@ export default function Archive() {
           <h1 className="text-2xl font-bold text-gray-900">
             {t("archive.title")}
           </h1>
-          <button
-            onClick={toggleFilterPanel}
-            className="px-4 py-2 bg-blue-100 text-black rounded-lg hover:bg-blue-200 transition-colors"
-          >
-            {t("archive.filter")}
-          </button>
+          <FilterButton 
+            onClick={() => setIsFilterOpen(true)} 
+            isOpen={isFilterOpen}
+            selectedFilters={getSelectedFilterLabels()}
+          />
         </div>
 
         <SearchBar
@@ -112,10 +128,15 @@ export default function Archive() {
         <ArchiveList items={displayItems} />
 
         <FilterPanel
-          isOpen={isFilterPanelOpen}
-          onClose={toggleFilterPanel}
-          filters={filters}
-          handlers={filterHandlers}
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+          subjects={subjects}
+          selectedSubjects={selectedSubjects}
+          onSubjectsChange={onSubjectsChange}
+          chapters={chapters}
+          selectedChapters={selectedChapters}
+          onChaptersChange={onChaptersChange}
+          onApplyFilters={handleApplyFilters}
         />
 
         <Pagination

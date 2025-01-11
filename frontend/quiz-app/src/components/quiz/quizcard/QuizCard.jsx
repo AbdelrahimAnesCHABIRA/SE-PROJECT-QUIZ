@@ -2,6 +2,7 @@
 import { GraduationCap, Trophy,RotateCw} from "lucide-react";
 import { CircularProgress } from "./CircularProgress";
 import { Badge } from "./Badge";
+import { useLocation } from "react-router-dom";
 
 export const QuizCard = ({
   id,
@@ -18,10 +19,18 @@ export const QuizCard = ({
   const progress = (answeredQuestions / totalQuestions) * 100;
   const hasStarted = answeredQuestions > 0;
   const isCompleted = playCount > 1;
+  const location = useLocation();
+  const onclick = () => {
+    if (location.pathname === "/archive" ) {
+      // Redirect to the quiz page
+    }
+    else {
+      onClick();
+  }};
 
   return (
     <div
-      onClick={onClick}
+      onClick={onclick}
       className={`group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer flex flex-col ${
         isCompleted ? "ring-2 ring-green-500 ring-offset-2" : ""
       } ${className || ""}`}
@@ -40,8 +49,7 @@ export const QuizCard = ({
         <div className="absolute top-4 right-4 z-20 flex gap-2">
           {isCompleted && (
             <Badge variant="success" className="animate-pulse">
-              <Trophy size={12} className="mr-1" /> انتهىx2
-              {/*add the number of completations*/}
+              <Trophy size={12} className="mr-1" /> انتهى {playCount} مرات  
             </Badge>
           )}
           <Badge variant="secondary">{totalQuestions} الاسئلة</Badge>
@@ -78,7 +86,7 @@ export const QuizCard = ({
               </div>
             </div>
             <button
-              onClick={() => {}}
+              onClick={onClick}
               className="group/button flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-600 text-white font-medium hover:bg-green-700 transition-all duration-300 z-10"
             >
               <RotateCw
