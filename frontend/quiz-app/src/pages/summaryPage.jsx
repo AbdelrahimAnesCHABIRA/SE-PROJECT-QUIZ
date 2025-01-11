@@ -5,6 +5,7 @@ import StatsGrid from '../components/Stats/StatsGrid';
 import QuestionList from '../components/Questions/QuestionList';
 import { formatTime } from '../utils/timeFormatter';
 import { useQuiz } from '../hooks/useQuiz';
+import Navbar from '../components/NavBar';
 
 const SummaryPage = () => {
   const { state } = useLocation();
@@ -63,7 +64,7 @@ const SummaryPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
-      <Header />
+      <Navbar/>
       <main className="max-w-2xl mx-auto p-4">
         <StatsGrid
           averageScore={quizData.averageScore}

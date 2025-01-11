@@ -4,6 +4,8 @@ import { SearchBar } from "../components/Explorer/SearchBar";
 import { ArchiveList } from "../components/Archive/ArchiveList";
 import { FilterPanel } from "../components/Archive/FilterPanel";
 import { Pagination } from "../components/Pagination/Pagination";
+import { Footer } from "../components/Layout/Footer";
+import Navbar from "../components/NavBar";
 
 // Custom hooks
 import { useSearch } from "../hooks/useSearch";
@@ -89,6 +91,7 @@ export default function Archive() {
 
   return (
     <div className="min-h-screen flex flex-col" dir="rtl">
+      <Navbar/>
       <div className="flex-1 space-y-8 px-4 py-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-900">
@@ -124,7 +127,9 @@ export default function Archive() {
           onPageChange={handlePageChange}
           isSearching={isSearching || loading}
         />
+
       </div>
+      <Footer/>
     </div>
   );
 }
