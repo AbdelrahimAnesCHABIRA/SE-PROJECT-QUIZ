@@ -54,7 +54,7 @@ export const BottomBar = ({
             }`}
           >
             {isAnswered && <CheckCircle size={20} />}
-            {isLastQuestion ? 'Finish Quiz' : 'Next Question'}
+            {isLastQuestion ? 'إنهاء الاختبار' : 'السؤال التالي'}
           </motion.button>
         )}
       </div>

@@ -25,8 +25,6 @@ export const FilterPanel = ({
     });
     onClose();
   };
-
-  console.log(selectedSubjects[0] ? selectedSubjects[0]._id : '');
   const { t } = useTranslation();
   const location = useLocation();
 

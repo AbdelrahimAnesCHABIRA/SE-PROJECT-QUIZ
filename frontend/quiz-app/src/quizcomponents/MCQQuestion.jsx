@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { HelpCircle } from "lucide-react";
 import { ImageModal } from "./ImageModal";
-import './MCQQuestion.css'; // Import the CSS file
+import "./MCQQuestion.css"; // Import the CSS file
 
 export const MCQQuestion = ({
   question, // Contains _id, correctAnswer, falseOptions, text, hint
@@ -44,10 +44,18 @@ export const MCQQuestion = ({
           <div className={`flex-1 order-2 md:order-1`}>
             {/* Question Header */}
             <div className="flex flex-col md:flex-row items-start gap-4 mb-6">
-              <h2 className="flex-1 text-lg md:text-xl font-semibold text-gray-900 leading-relaxed">
+              <h2 className="flex-1 text-lg md:text-xl font-semibold text-gray-900 leading-relaxed text-right">
                 {question.questionText}
               </h2>
             </div>
+            <div className="flex flex-col md:flex-row items-start gap-4 mb-6">
+  <h3 className="flex-1 text-lg md:text-xl font-bold text-green-400 leading-relaxed text-right">
+    <span className="text-black font-normal" > الإجابة الصحيحة: </span>
+    <span style={{ textShadow: '2px 2px 4px rgba(0, 255, 0, 0.6)' }}>
+      {question.correctAnswer}
+    </span>
+  </h3>
+</div>
 
             {/* Hint and Show Options Buttons */}
             <div className="flex gap-4 mb-6">
@@ -60,7 +68,7 @@ export const MCQQuestion = ({
                   `}
                 >
                   <HelpCircle size={16} />
-                  {showHint ? "Hide Hint" : "Show Hint"}
+                  {showHint ? "إخفاء التلميح" : "عرض التلميح"}
                 </button>
               )}
 
@@ -71,7 +79,7 @@ export const MCQQuestion = ({
                   bg-blue-50 text-blue-600 hover:bg-blue-100
                 `}
               >
-                {showOptions ? "Hide Options" : "Show Options"}
+                {showOptions ? "إخفاء الخيارات" : "عرض الخيارات"}
               </button>
             </div>
 
@@ -106,24 +114,33 @@ export const MCQQuestion = ({
         </div>
       </div>
 
-      {/* Options Grid */}
-      {showOptions && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-[90%] mx-auto">
-          {[question.correctAnswer, ...question.falseOptions]?.map((option, index) => (
-            <div
-              key={index}
-              className="p-6 rounded-xl border-2 text-left min-h-[60px] flex items-center bg-gray-50 text-gray-500 border-gray-200"
-            >
-              <div className="text-lg font-medium">{option}</div>
+      {/* Options Grid with Animation */}
+      <AnimatePresence>
+        {showOptions && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-[90%] mx-auto">
+              {[question.correctAnswer, ...question.falseOptions]?.map((option, index) => (
+                <div
+                  key={index}
+                  className="p-6 rounded-xl border-2 text-right min-h-[60px] flex items-center bg-gray-50 text-gray-500 border-gray-200"
+                >
+                  <div className="text-lg font-medium">{option}</div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Scale Selection - Always Visible */}
       <div className="mt-6 w-[90%] mx-auto">
-        <h3 className="text-lg font-medium mb-4">Rate the answer :</h3>
-        <div className="grid grid-cols-5 md:grid-cols-10 gap-2 mb-8">
+        <h3 className="text-lg font-medium mb-4 text-right">:قيم الإجابة </h3>
+        <div className="grid grid-cols-5 md:grid-cols-10 gap-2 mb-8 justify-center">
           {[...Array(5)].map((_, index) => (
             <motion.button
               key={index + 1}
