@@ -36,7 +36,7 @@ export const fetchRecentFilteredQuizzes = async (
         limit,
         skip,
         sort: "-createdAt",
-        subjects: filters.selectedSubjects?.join(","),
+        subjects: filters.selectedSubjects?.map(sub => sub._id).join(","),
         chapters: filters.selectedChapters?.join(","),
         questionCount: filters.selectedQuestionCount?.join(","),
       },
@@ -48,15 +48,14 @@ export const fetchRecentFilteredQuizzes = async (
   };
 };
 
-export const fetchAllQuestions = async (Level, page, filters = {}, limit = 24) => {
+export const fetchAllQuestions = async (Level, page, filters = {}, limit = 24, search = null) => {
   try {
-    
-   
     const response = await axios.get(`http://localhost:5000/api/AllQuestions`, {
       params: {
         studyLevel: Level,
         page,
         limit,
+        search, // Add search parameter
         subjects: filters?.selectedSubjects?.length ? filters.selectedSubjects[0]._id : undefined,
         chapters: filters?.selectedChapters?.length ? filters.selectedChapters.join(",") : undefined,
         questionCount: filters?.selectedQuestionCount?.length ? filters.selectedQuestionCount.join(",") : undefined

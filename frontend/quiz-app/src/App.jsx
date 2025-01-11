@@ -21,7 +21,12 @@ import Rapports from "./pages/Rapports";
 import Classes from "./pages/Classes";
 import CreatePage from "./pages/createPage";
 import SessionTester from "./pages/testChildSession";
+
+import i18n from './i18n/i18n';
+
+
 import StatisticsPage from "./pages/Rapports";
+
 
 const App = () => {
   return (

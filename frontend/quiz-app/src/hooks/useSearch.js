@@ -10,6 +10,9 @@ export const useSearch = (initialItems = []) => {
   const [totalPages, setTotalPages] = useState(1);
   const [playCount, setPlayCount] = useState(1);
 
+  // Add state to store childId:
+  const [childId, setChildId] = useState('');
+
   useEffect(() => {
     const performSearch = async () => {
       if (!query.trim()) {
@@ -20,11 +23,13 @@ export const useSearch = (initialItems = []) => {
 
       setIsSearching(true);
       try {
+        // Send childId as a filter parameter:
         const response = await axios.get('http://localhost:5000/api/QuizTemplateSearch', {
           params: {
             search: query,
             page: currentPage,
             limit: 12,
+            child: childId,
             ...(playCount === 1 ? { 'playCount[$lte]': 1 } : { 'playCount[$gte]': playCount })
           }
         });
@@ -39,8 +44,9 @@ export const useSearch = (initialItems = []) => {
 
     const debounceTimer = setTimeout(performSearch, 300);
     return () => clearTimeout(debounceTimer);
-  }, [query, currentPage, playCount]);
+  }, [query, currentPage, playCount, childId]);
 
+  // Return childId and its setter so you can update it from anywhere in your app
   return {
     query,
     setQuery,
@@ -51,6 +57,8 @@ export const useSearch = (initialItems = []) => {
     setCurrentPage,
     totalPages,
     playCount,
-    setPlayCount
+    setPlayCount,
+    childId,
+    setChildId
   };
 };

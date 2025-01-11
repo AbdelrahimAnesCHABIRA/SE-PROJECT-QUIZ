@@ -1,27 +1,27 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { SearchBar } from "../components/Explorer/SearchBar";
 import { Pagination } from "../components/Pagination/Pagination";
 import { FilterButton } from "../components/Filters/FilterButton";
 import { FilterPanel } from "../components/Filters/FilterPanel";
 import { useFilters } from "../hooks/useFilters";
-import { useSearch } from "../hooks/useSearch";
+import { Shuffle, Plus } from 'lucide-react';
 import Spinner from "../components/spinner/Spinner";
 import { fetchAllQuestions } from "../services/sectionDataService";
 import { QuestionSelectionCard } from "../anescomponents/QuestionSelectionCard";
-import { InputField } from "../anescomponents/InputField";
+import InputField from "../anescomponents/InputField";
 import Button from "../anescomponents/Button";
 import { useQuizTemplate } from "../hooks/useQuizTemplate";
 import { useQuiz } from "../hooks/useQuiz";
 import { useQuestion } from "../hooks/useQuestion";
-import { useChildSession } from "../hooks/useChildSession";
 import axios from "axios";
+import { Model } from "../components/Create/Model";
+import { SelectSubject } from "../components/Create/SelectSubject";
 
 export default function CreatePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const { createQuizTemplate } = useQuizTemplate();
   const [questions, setQuestions] = useState([]);
   const [questionStats, setQuestionStats] = useState([]);
@@ -40,6 +40,12 @@ export default function CreatePage() {
   const [studyLevel, setStudyLevel] = useState(null);
   const { fetchStats } = useQuiz();
   const { fetchChaptersIdByQuestionId } = useQuestion();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isSearching, setIsSearching] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  
   useEffect(() => {
     const fetchChildIdFromSession = async () => {
       try {
@@ -54,18 +60,7 @@ export default function CreatePage() {
     };
     fetchChildIdFromSession();
   }, []);
-
-  const {
-    query,
-    setQuery,
-    searchResults,
-    isSearching,
-    setItems: setSearchItems,
-    currentPage,
-    setCurrentPage,
-    totalPages: searchTotalPages,
-  } = useSearch([]);
-
+  
   const {
     subjects,
     chapters,
@@ -77,24 +72,25 @@ export default function CreatePage() {
     onQuestionCountChange,
     getSelectedFilterLabels,
   } = useFilters(studyLevel, childId);
-  const displayItems = Array.isArray(query ? searchResults : questions)
-    ? query
-      ? searchResults
-      : questions
-    : [];
+  const displayItems = questions;
   const handlePageChange = (page) => {
-    setCurrentPage(page); 
-    window.scrollTo({ top: 0, behavior: "smooth" }); 
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const fetchPageData = async (page) => { 
+  const fetchPageData = async (page, searchQuery = "") => {
     setLoading(true);
     try {
-      const response = await fetchAllQuestions(studyLevel, page, activeFilters, 24);
+      const response = await fetchAllQuestions(
+        studyLevel,
+        page,
+        activeFilters,
+        24,
+        searchQuery
+      );
       setQuestions(response.data);
       setTotalItems(response.total);
-      setSearchItems(response.data);
-
-      // Fetch stats for the new questions immediately
+      setTotalPages(response.totalPages); // Store totalPages from response
+  
       if (response.data.length > 0) {
         const stats = await fetchStats(response.data, childId);
         setQuestionStats(stats);
@@ -105,11 +101,15 @@ export default function CreatePage() {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
-    fetchPageData(currentPage);
-  }, [currentPage, location.search, activeFilters, childId]);
-
+    const delayDebounceFn = setTimeout(() => {
+      fetchPageData(currentPage, query);
+    }, 300);
+  
+    return () => clearTimeout(delayDebounceFn);
+  }, [query, currentPage, activeFilters, childId]);
+  
   const handleApplyFilters = (filters) => {
     setActiveFilters({
       selectedSubjects: filters.selectedSubjects || [],
@@ -126,67 +126,59 @@ export default function CreatePage() {
         : [...prev, questionId]
     );
   };
-
+  
   const randomizeQuestions = () => {
     if (randomQuestionCount <= 0 || randomQuestionCount > questions.length) {
-      alert(`Please select a number between 1 and ${questions.length}`);
+      alert(t('create.enterQuestionCount') + ` (1-${questions.length})`);
       return;
     }
-
+  
     const shuffled = [...questions].sort(() => 0.5 - Math.random());
     const randomizedSelection = shuffled
       .slice(0, randomQuestionCount)
       .map((q) => q._id);
     setSelectedQuestions(randomizedSelection);
   };
-
-  // useEffect(() => {
-  //   if (selectedQuestions.length > 0) {
-  //     fetchChaptersIdByQuestionId(selectedQuestions).then((chapters) => {
-  //       setActiveFilters((prev) => ({
-  //         ...prev,
-  //         selectedChapters: [...new Set(chapters.map((c) => c.chapter_id))],
-  //       }));
-  //     });
-  //   }
-  // }, [selectedQuestions]);
-
-  const startQuiz = async () => {
+  const startQuiz = async (value) => {
     if (selectedQuestions.length === 0) {
-      alert("Please select at least one question to start the quiz.");
+      alert(t('create.selectAtLeastOne'));
       return;
     }
-
+  
     try {
       // Get chapters either from active filters or fetch from selected questions
       let chaptersForQuiz = activeFilters.selectedChapters;
       if (chaptersForQuiz.length === 0) {
         console.log("Fetching chapters from selected questions");
         console.log("Selected questions:", selectedQuestions);
-        const chaptersFromQuestions = await fetchChaptersIdByQuestionId(selectedQuestions);
+        const chaptersFromQuestions = await fetchChaptersIdByQuestionId(
+          selectedQuestions
+        );
         chaptersForQuiz = [...new Set(chaptersFromQuestions)]; // Remove duplicates
         console.log("Chapters from questions:", chaptersForQuiz);
       }
-
+  
       const quizTemplatePayload = {
-        title: "Custom Quiz",
+        title: value || t('create.untitledQuiz'),
         module: activeFilters.selectedSubjects[0]._id,
         child: childId,
         questions: selectedQuestions,
         chapters: chaptersForQuiz,
-        imageUrl: activeFilters.selectedSubjects[0].imageUrl ? activeFilters.selectedSubjects[0].imageUrl : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+        imageUrl: activeFilters.selectedSubjects[0].imageUrl
+          ? activeFilters.selectedSubjects[0].imageUrl
+          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
       };
-
+  
       const quizTemplate = await createQuizTemplate(quizTemplatePayload);
-
+  
       if (!quizTemplate) {
         throw new Error("Failed to create QuizTemplate");
       }
-
+  
       const selectedQuestionsData = questions.filter((q) =>
         selectedQuestions.includes(q._id)
       );
-
+  
       navigate("/quiz", {
         state: {
           questions: selectedQuestionsData,
@@ -195,26 +187,35 @@ export default function CreatePage() {
       });
     } catch (err) {
       console.error("Failed to start quiz:", err);
-      alert("Failed to start quiz. Please try again later.");
+      alert(t('create.failedToStart'));
     }
   };
-
-  const finalTotalPages = query ? searchTotalPages : Math.ceil(totalItems / 24);
+  
+  const finalTotalPages = totalPages || Math.ceil(totalItems / 24);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            {t("explorer.allItems")}
+
+   <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header Section */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+            {t("createPage.title")}
+
           </h1>
+          
+          {/* Search and Filter Bar */}
           <div className="flex flex-col gap-4">
             <div className="flex gap-4 items-center w-full">
               <SearchBar
                 value={query}
-                onChange={setQuery}
+                onChange={(newQuery) => {
+                  setQuery(newQuery);
+                  setCurrentPage(1);
+                }}
                 isSearching={isSearching}
                 placeholder={t("explorer.searchPlaceholder")}
+                className="flex-grow"
               />
               <FilterButton
                 onClick={() => setIsFilterOpen(true)}
@@ -222,75 +223,102 @@ export default function CreatePage() {
                 selectedFilters={getSelectedFilterLabels()}
               />
             </div>
-            <div className="flex gap-4 items-center">
-              <InputField
-                label={"Enter the number of questions"}
-                onChange={(e) =>
-                  setRandomQuestionCount(parseInt(e.target.value, 10) || 0)
-                }
-                placeholder={`Enter a number (1-${questions.length})`}
-                type="number"
-                value={randomQuestionCount}
-                htmlFor={"number of questions"}
-              />
-              <Button onclick={randomizeQuestions} text={"Randomize"} />
-              <Button
-                onclick={startQuiz}
-                text={"Start Quiz"}
-                disabled={!hasAppliedFilters && selectedQuestions.length === 0}
-                className={
-                  !hasAppliedFilters ? "opacity-50 cursor-not-allowed" : ""
-                }
-              />
-            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {loading ? (
-            <Spinner />
-          ) : displayItems.length > 0 ? (
-            displayItems.map((q, idx) => {
-              const stats =
-                questionStats.find((stat) => stat.questionId === q._id) || {};
-              return (
-                <QuestionSelectionCard
-                  key={idx}
-                  questionText={q.questionText}
-                  stats={stats}
-                  isSelected={selectedQuestions.includes(q._id)}
-                  onToggle={() => toggleQuestionSelection(q._id)}
-                />
-              );
-            })
-          ) : (
-            <div className="col-span-full text-center text-gray-500">
-              No items found
-            </div>
-          )}
+        {/* Controls Section */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+            <InputField
+              label={t('createPage.enterQuestionCount')}
+              onChange={(e) => setRandomQuestionCount(parseInt(e.target.value, 10) || 0)}
+              placeholder={`1-${questions.length}`}
+              type="number"
+              value={randomQuestionCount}
+              htmlFor="number-of-questions"
+            />
+            <Button
+              onclick={randomizeQuestions}
+              text={t('createPage.randomize')}
+              icon={Shuffle}
+              className="h-[46px]"
+            />
+            <Button
+              onclick={() => setIsModalOpen(true)}
+              text={t('createPage.createQuiz')}
+              icon={Plus}
+              disabled={!hasAppliedFilters && selectedQuestions.length === 0}
+              className="h-[46px]"
+            />
+          </div>
         </div>
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={finalTotalPages}
-          onPageChange={handlePageChange}
-          isSearching={isSearching || loading}
-        />
-
-        <FilterPanel
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          subjects={subjects}
-          selectedSubjects={selectedSubjects}
-          onSubjectsChange={onSubjectsChange}
-          chapters={chapters}
-          selectedChapters={selectedChapters}
-          onChaptersChange={onChaptersChange}
-          questionCount={selectedQuestionCount}
-          onQuestionCountChange={onQuestionCountChange}
-          onApplyFilters={handleApplyFilters}
-        />
+        {/* Content Section */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          {selectedSubjects.length === 0 ? (
+            <SelectSubject />
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {loading ? (
+                  <div className="col-span-full flex justify-center py-12">
+                    <Spinner />
+                  </div>
+                ) : displayItems.length > 0 ? (
+                  displayItems.map((q, idx) => {
+                    const stats = questionStats.find((stat) => stat.questionId === q._id) || {};
+                    return (
+                      <QuestionSelectionCard
+                        key={idx}
+                        questionText={q.questionText}
+                        stats={stats}
+                        isSelected={selectedQuestions.includes(q._id)}
+                        onToggle={() => toggleQuestionSelection(q._id)}
+                      />
+                    );
+                  })
+                ) : (
+                  <div className="col-span-full text-center py-12 text-gray-500">
+                    {t('createPage.noItemsFound')}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+          
+          {/* Pagination */}
+          <div className="mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={finalTotalPages}
+              onPageChange={handlePageChange}
+              isSearching={isSearching || loading}
+            />
+          </div>
+        </div>
       </div>
+
+      {/* Filter Panel */}
+      <FilterPanel
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        subjects={subjects}
+        selectedSubjects={selectedSubjects}
+        onSubjectsChange={onSubjectsChange}
+        chapters={chapters}
+        selectedChapters={selectedChapters}
+        onChaptersChange={onChaptersChange}
+        questionCount={selectedQuestionCount}
+        onQuestionCountChange={onQuestionCountChange}
+        onApplyFilters={handleApplyFilters}
+      />
+
+      {/* Create Quiz Modal */}
+      <Model
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={(value) => startQuiz(value)}
+      />
     </div>
   );
 }

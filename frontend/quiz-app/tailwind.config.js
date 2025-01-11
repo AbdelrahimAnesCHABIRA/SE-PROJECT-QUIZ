@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        arabic: ['Tajawal', 'sans-serif'],
+      },
       colors: {
         primary:  '#2563eb',
           'primary-hover': '#1d4ed8',
