@@ -9,12 +9,12 @@ import { Pagination } from "../components/Pagination/Pagination";
 import { useSearch } from "../hooks/useSearch";
 import { useArchiveFilters } from "../hooks/useArchiveFilters";
 import { fetchArchiveQuizzes } from "../hooks/useArchive"; // Import the function
-
+import { useChildSession } from '../hooks/useChildSession';
 const ITEMS_PER_PAGE = 12;
 
 export default function Archive() {
   const { t } = useTranslation();
-  const childId = "64a2c4a5b7e2d5e37e9fc314";
+  const { childId, studyLevel, sessionError, sessionLoading } = useChildSession();
 
   // State
   const [quizzes, setQuizzes] = useState([]);
@@ -30,7 +30,7 @@ export default function Archive() {
     searchResults,
     isSearching,
     setItems,
-    playCount,
+    setChildId,
     setPlayCount,
     totalPages: searchTotalPages,
   } = useSearch([]);
@@ -47,6 +47,9 @@ export default function Archive() {
   useEffect(() => {
     setPlayCount(2);
   }, [setPlayCount]);
+  useEffect(() => {
+    setChildId(childId);
+  }, [childId, setChildId]);
 
   // Fetch data when currentPage changes
   useEffect(() => {

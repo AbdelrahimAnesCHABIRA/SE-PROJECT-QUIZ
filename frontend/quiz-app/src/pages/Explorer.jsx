@@ -9,10 +9,16 @@ import { useSearch } from '../hooks/useSearch';
 
 
 export default function Explorer() {
-  const { query, setQuery, searchResults, isSearching, setItems, currentPage, setCurrentPage, totalPages,setPlayCount } = useSearch();
+
+  const { query, setQuery, searchResults,setChildId, isSearching, setItems, currentPage, setCurrentPage, totalPages,setPlayCount } = useSearch();
+  
+  const childId = "678195fd5d8028cb11faaad6";
   useEffect(() => {
     setPlayCount(1);
   }, [setPlayCount]);
+  useEffect(() => {
+    setChildId(childId);
+  }, [childId, setChildId]);
 
 
   return (

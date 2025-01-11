@@ -42,18 +42,6 @@ const getQuestionsByLevel = async (req, res) => {
           query.questionText = { $regex: search, $options: "i" };
       }
 
-    //   // Remove empty filter values
-    //   const cleanFilters = Object.entries(filters).reduce((acc, [key, value]) => {
-    //       if (value && value !== "") {
-    //           acc[key] = value;
-    //       }
-    //       return acc;
-    //   }, {});
-
-    //   if (Object.keys(cleanFilters).length > 0) {
-    //       Object.assign(query, cleanFilters);
-    //   }
-
       console.log('Final query:', query); // Debug log
 
       // Execute query

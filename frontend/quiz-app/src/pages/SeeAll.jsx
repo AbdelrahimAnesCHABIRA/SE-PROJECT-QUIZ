@@ -15,9 +15,11 @@ import {
   fetchRecentFilteredQuizzes, 
 } from '../services/sectionDataService';
 import { useChildSession } from '../hooks/useChildSession';
+import { use } from 'react';
+
 
 export default function SeeAll() {
-  const {userId, childId, studyLevel, sessionError, sessionLoading } = useChildSession();
+  const { childId, studyLevel, sessionError, sessionLoading } = useChildSession();
   const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -35,6 +37,8 @@ export default function SeeAll() {
     isSearching,
     setItems: setSearchItems,
     currentPage,
+    setPlayCount,
+    setChildId,
     setCurrentPage,
     totalPages: searchTotalPages,
   } = useSearch([]);
@@ -49,12 +53,18 @@ export default function SeeAll() {
     onChaptersChange,
     onQuestionCountChange,
     getSelectedFilterLabels
-  } = useFilters();
+  } = useFilters(studyLevel, childId);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  useEffect(() => {
+    setChildId(childId);
+  }, [childId, setChildId]);
+  useEffect(() => {
+    setPlayCount(0);
+  }, [setPlayCount]);
 
   const fetchPageData = async (page) => {
     setLoading(true);

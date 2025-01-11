@@ -1,15 +1,25 @@
-import React from 'react'
-import {Shuffle,} from 'lucide-react';
-export default function Button({text,onclick,disabled, className}) {
+import React from 'react';
+
+
+export default function Button({ text, onclick, disabled, className, icon: Icon }) {
   return (
-    <div className="mb-8">
-          <button
-            onClick={onclick}
-            className={`${disabled ? 'opacity-50 cursor-not-allowed' : 'inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors '}`}
-          >
-            <Shuffle size={20} />
-            {text}
-          </button>
-        </div>
-  )
+    <button
+      onClick={onclick}
+      disabled={disabled}
+      className={`
+        inline-flex items-center justify-center gap-2 
+        px-6 py-3 rounded-lg font-medium
+        transition-all duration-200 ease-in-out
+        focus:outline-none focus:ring-2 focus:ring-offset-2 
+        ${disabled 
+          ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+          : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 focus:ring-blue-500'
+        }
+        ${className}
+      `}
+    >
+      {Icon && <Icon size={20} className="shrink-0" />}
+      {text}
+    </button>
+  );
 }

@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { QuestionSelectionCard } from '../anescomponents/QuestionSelectionCard';
 import Button from '../anescomponents/Button';
-import { InputField } from '../anescomponents/InputField';
+import InputField  from '../anescomponents/InputField';
 import { useQuestion } from '../hooks/useQuestion';
 import { useQuiz } from '../hooks/useQuiz';
 import { useQuizTemplate } from '../hooks/useQuizTemplate';
