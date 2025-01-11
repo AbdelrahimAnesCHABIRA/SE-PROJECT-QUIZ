@@ -15,8 +15,9 @@ import {
   fetchRecentFilteredQuizzes, 
 } from '../services/sectionDataService';
 import { useChildSession } from '../hooks/useChildSession';
+import { Footer } from '../components/Layout/Footer';
 import { use } from 'react';
-
+import Navbar from '../components/NavBar';
 
 export default function SeeAll() {
   const { childId, studyLevel, sessionError, sessionLoading } = useChildSession();
@@ -100,6 +101,7 @@ export default function SeeAll() {
   return (
 
     <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
+      <Navbar/>
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
@@ -163,6 +165,7 @@ export default function SeeAll() {
           onApplyFilters={handleApplyFilters}
         />
       </div>
+      <Footer/>
     </div>
   );
 }

@@ -21,6 +21,8 @@ import Rapports from "./pages/Rapports";
 import Classes from "./pages/Classes";
 import CreatePage from "./pages/createPage";
 import SessionTester from "./pages/testChildSession";
+import { Footer } from "./components/Layout/Footer";
+import ProfilePage from "./pages/profilePage";
 
 import i18n from './i18n/i18n';
 
@@ -45,6 +47,7 @@ const App = () => {
           <Route path="/chooseChild" element={<ChooseChildPage />} />
           <Route path="/test" element={<ProtectedRoute><SessionTest /></ProtectedRoute>} />
           <Route path="/testChild" element={<SessionTester />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route
             path="/quizizz-ai"
             element={

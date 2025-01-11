@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Listbox } from '@headlessui/react';
+import { Footer } from '../components/Layout/Footer';
+import Navbar from '../components/NavBar';
 
 function StatisticsPage() {
   const [stats, setStats] = useState(null);
@@ -72,7 +74,8 @@ function StatisticsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8" dir="rtl">
-      <div className="max-w-7xl mx-auto">
+      <Navbar/>
+      <div className="max-w-full">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">إحصائيات الأداء</h1>
@@ -196,7 +199,7 @@ function StatisticsPage() {
         </div>
 
         {/* Charts */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg mb-3">
           <h2 className="text-xl font-semibold mb-4">أداء الوحدات</h2>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
@@ -211,7 +214,9 @@ function StatisticsPage() {
             </ResponsiveContainer>
           </div>
         </div>
+        <Footer/>
       </div>
+
     </div>
   );
 }
