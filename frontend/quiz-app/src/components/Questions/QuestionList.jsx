@@ -4,7 +4,7 @@ import QuestionItem from './QuestionItem';
 const QuestionList = ({ questions }) => {
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-bold mb-4">Question Details</h2>
+<h2 className="text-lg font-bold mb-4">تفاصيل السؤال</h2>
       <div className="space-y-6">
         {questions.map((question, index) => (
           <QuestionItem

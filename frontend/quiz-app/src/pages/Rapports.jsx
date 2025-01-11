@@ -12,7 +12,6 @@ function StatisticsPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Fetch statistics
     const fetchStats = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/ChildStats');
@@ -22,7 +21,6 @@ function StatisticsPage() {
       }
     };
 
-    // Fetch modules
     const fetchModules = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/Modules');
@@ -37,7 +35,6 @@ function StatisticsPage() {
   }, []);
 
   useEffect(() => {
-    // Fetch chapters when module is selected
     const fetchChapters = async () => {
       if (selectedModule) {
         try {
@@ -54,11 +51,13 @@ function StatisticsPage() {
     fetchChapters();
   }, [selectedModule]);
 
-  if (!stats) return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-    </div>
-  );
+  if (!stats) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
 
   const moduleData = Object.entries(stats.moduleScores).map(([name, data]) => ({
     name,
@@ -68,20 +67,19 @@ function StatisticsPage() {
   const filteredQuestions = Object.entries(stats.questionStats)
     .filter(([id, data]) => {
       if (!searchQuery) return true;
-      // You'll need to fetch question text from your backend
-      return id.toLowerCase().includes(searchQuery.toLowerCase());
+      return data.questionText.toLowerCase().includes(searchQuery.toLowerCase());
     });
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8" dir="rtl">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Performance Statistics</h1>
+          <h1 className="text-3xl font-bold text-gray-900">إحصائيات الأداء</h1>
           <div className="mt-2">
             <p className="text-sm text-gray-500">
-              Global Score: {stats.globalScore.toFixed(2)} | 
-              Average Score: {stats.globalAverageScore.toFixed(2)}
+              النتيجة الإجمالية: {stats.globalScore.toFixed(2)} | 
+              متوسط النتيجة: {stats.globalAverageScore.toFixed(2)}
             </p>
           </div>
         </div>
@@ -94,7 +92,7 @@ function StatisticsPage() {
               <div className="relative">
                 <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-opacity-75">
                   <span className="block truncate">
-                    {selectedModule?.moduleName || 'Select Module'}
+                    {selectedModule?.moduleName || 'اختر الوحدة'}
                   </span>
                 </Listbox.Button>
                 <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
@@ -121,7 +119,7 @@ function StatisticsPage() {
               <div className="relative">
                 <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-opacity-75">
                   <span className="block truncate">
-                    {selectedChapter?.chapterName || 'Select Chapter'}
+                    {selectedChapter?.chapterName || 'اختر الفصل'}
                   </span>
                 </Listbox.Button>
                 <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
@@ -146,7 +144,7 @@ function StatisticsPage() {
           <div>
             <input
               type="text"
-              placeholder="Search questions..."
+              placeholder="ابحث عن الأسئلة..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-2 rounded-lg shadow-md border-gray-300 focus:ring-primary-500 focus:border-primary-500"
@@ -154,41 +152,24 @@ function StatisticsPage() {
           </div>
         </div>
 
-        {/* Charts */}
-        <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
-          <h2 className="text-xl font-semibold mb-4">Module Performance</h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={moduleData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="score" fill="#3b82f6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
         {/* Question Statistics */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Question Statistics</h2>
+        <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
+          <h2 className="text-xl font-semibold mb-4">إحصائيات الأسئلة</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Question text
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    نص السؤال
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Score
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    مجموع النقاط
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Attempts
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    عدد المحاولات
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Average Score
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    متوسط النقاط
                   </th>
                 </tr>
               </thead>
@@ -211,6 +192,23 @@ function StatisticsPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* Charts */}
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold mb-4">أداء الوحدات</h2>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={moduleData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="score" fill="#3b82f6" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
