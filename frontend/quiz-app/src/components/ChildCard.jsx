@@ -41,20 +41,6 @@ export const ChildCard = ({ Child, onDelete, onClick }) => {
           </div>
         </div>
       </div>
-      <div className="p-4 flex justify-end items-center bg-gradient-to-r from-blue-50 to-indigo-50">
-        <div className="flex items-center gap-3">
-          <div className="text-sm">
-            <span className="text-gray-900 select-none">التقدم</span>
-          </div>
-          <CircularProgress
-            percentage={Child.score}
-            size={50}
-            strokeWidth={3}
-            className="transform group-hover:scale-110 transition-transform duration-300"
-          />
-          
-        </div>
-      </div>
     </div>
   );
 };

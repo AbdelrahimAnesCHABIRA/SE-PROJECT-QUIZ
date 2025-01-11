@@ -6,15 +6,17 @@ import { NewSection } from '../components/Explorer/NewSection';
 import { Footer } from '../components/Layout/Footer';
 import { SearchResults } from '../components/Explorer/SearchResults';
 import { useSearch } from '../hooks/useSearch';
+import { useChildSession } from '../hooks/useChildSession';
 
 
 export default function Explorer() {
 
   const { query, setQuery, searchResults,setChildId, isSearching, setItems, currentPage, setCurrentPage, totalPages,setPlayCount } = useSearch();
   
-  const childId = "678195fd5d8028cb11faaad6";
+  const {userId, childId, studyLevel, sessionError, sessionLoading } = useChildSession();
+
   useEffect(() => {
-    setPlayCount(1);
+    setPlayCount(0);
   }, [setPlayCount]);
   useEffect(() => {
     setChildId(childId);
@@ -42,8 +44,6 @@ export default function Explorer() {
         ) : (
           <>
             <RecentActivities />
-            <TrendingSection />
-            <NewSection />
           </>
         )}
       </div>
