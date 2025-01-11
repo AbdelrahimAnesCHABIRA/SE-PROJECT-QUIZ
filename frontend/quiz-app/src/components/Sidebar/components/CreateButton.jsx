@@ -11,7 +11,7 @@ export const CreateButton = ({ isCollapsed }) => {
   return (
     <button 
     onClick={() => handleCreateClick()}
-      className={`bg-primary hover:bg-primary-hover text-white rounded-lg transition-colors
+      className={`bg-primary-500 hover:bg-primary-hover text-white rounded-lg transition-colors
         ${isCollapsed 
           ? 'w-10 h-10 flex items-center justify-center text-xl' 
           : 'w-full py-3 px-4 text-base'
