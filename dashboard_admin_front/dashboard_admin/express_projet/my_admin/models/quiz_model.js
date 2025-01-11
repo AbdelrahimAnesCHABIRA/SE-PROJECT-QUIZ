@@ -1,47 +1,21 @@
 const mongoose = require('mongoose');
 
-const questionSchema = mongoose.Schema({
-    questionText: {
-        type: String,
-        required: [true, "Question text is required"],
-    },
-    answer: {
-        type: String,
-        required: [true, "Answer is required"],
-    },
-    options: {
-        type: [String],
-        validate: {
-            validator: function (options) {
-                return options.length === 3;
-            },
-            message: "Exactly 3 options are required",
-        },
-        required: [true, "Options are required"],
-    },
-    hint: {
-        type: String,
-        default: null,
-    },
+const quizTemplateSchema = new mongoose.Schema({
+  title: { type: String, required: true }, // Title of the quiz template
+  createdAt: { type: Date, default: Date.now }, // Automatically set to the current date
+  scores: [{ type: Number, default: 0 }], // Array of scores, initialized to empty
+  length: { type: Number, default: 0 }, // Total number of questions in the quiz
+  progress: { type: Number, default: 0 }, // Number of questions answered in the last attempt
+  questions: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true }, // Array of question references
+  ],
+  child: { type: mongoose.Schema.Types.ObjectId, ref: 'Child', required: true }, // Reference to the child who created the quiz
+  playCount: { type: Number, default: 1 }, // Number of times the quiz has been played
+  chapters: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter', required: true }, // Array of chapter references
+  ],
+  module: { type: mongoose.Schema.Types.ObjectId, ref: 'Module', required: true },
+  imageUrl: {type: String, required: false},
 });
 
-const quizSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, "Quiz name is required"],
-    },
-    number: {
-        type: Number,
-        required: [true, "Quiz number is required"],
-    },
-    questions: {
-        type: [questionSchema],
-        required: [true, "Questions are required"],
-    },
-    score: {
-        type: Number,
-        default: 0,
-    },
-});
-
-module.exports = mongoose.model("Quiz", quizSchema);
+module.exports = mongoose.model('QuizTemplate', quizTemplateSchema);
