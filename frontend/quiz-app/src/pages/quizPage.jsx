@@ -7,7 +7,7 @@ import { useQuizTemplate } from '../hooks/useQuizTemplate';
 import { QuizStartCard } from '../components/quiz/QuizStartCard';
 import  Spinner  from '../components/spinner/Spinner';
 import { useChildSession } from '../hooks/useChildSession';
-import { useUser } from '../hooks/useUser';
+import { QuizProgressBar } from '../components/quiz/QuizProgressBar';
 import { useChild } from '../hooks/useChild';
 
 const QuizPage = () => {
@@ -118,15 +118,25 @@ const QuizPage = () => {
     }
 
     return (
-        <div>
-            <h1>Quiz</h1>
-            <p>Question {currentQuestionIndex + 1} of {questions.length}</p>
-            <div className="h-screen overflow-y-auto">
-                <MCQQuestion 
-                    question={currentQuestion}
-                    handleScore={handleScore}
-                    setIsAnswered={setIsAnswered}
-                />
+        <div className="flex flex-col h-screen bg-gray-50">
+            {/* Header with progress bar - fixed height */}
+            <div className="w-full p-4 mb-1">
+                <QuizProgressBar current={currentQuestionIndex + 1} total={questions.length} />
+            </div>
+    
+            {/* Main content - flexible height */}
+            <div className="flex-1 overflow-hidden">
+                <div className="h-full overflow-y-auto">
+                    <MCQQuestion 
+                        question={currentQuestion}
+                        handleScore={handleScore}
+                        setIsAnswered={setIsAnswered}
+                    />
+                </div>
+            </div>
+    
+            {/* Footer - fixed height */}
+            <div className="w-full">
                 <BottomBar
                     userName={child.firstName + " " + child.lastName}
                     onNextQuestion={handleNextQuestion}
