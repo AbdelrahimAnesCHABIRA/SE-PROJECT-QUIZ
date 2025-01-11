@@ -11,7 +11,14 @@ const EditAndModifyModule = ({ onCancel }) => {
   const [newModuleName, setNewModuleName] = useState("");
   const [newStudyLevel, setNewStudyLevel] = useState("");
 
-  const studyLevels = ["Primary", "Secondary", "Highschool", "University"];
+  const studyLevels =  [
+    "الاولى إبتدائي",
+    "الثانية إبتدائي",
+    "الثالثة إبتدائي",
+    "الرابعة إبتدائي",
+    "الخامسة إبتدائي",
+  
+  ];
 
   const handleSearch = async () => {
     try {
