@@ -28,6 +28,7 @@ const ChildRoutes = require('./routes/ChildRoutes');
 const QuizTemplateSearchRoutes = require('./routes/QuizTemplateSearchRoutes');
 const QuizTemplateSeeAllFilterRoutes = require('./routes/QuizTemplateSeeAllFilterRoutes');
 const AllQuestions = require('./routes/getQuestionsByLevelRouters');
+const ChildStatsRoutes = require('./routes/childStatsRoutes');
 const CloudinaryRoutes = require('./routes/testCloudinary');
 
 // Add other routes similarly
@@ -81,6 +82,7 @@ app.use('/api/QuizTemplateSearch', QuizTemplateSearchRoutes);
 app.use('/api/QuizTemplateSeeAll', quizTemplateSeeAllRoutes);
 app.use('/api/QuizTemplateSeeAllFilter', QuizTemplateSeeAllFilterRoutes);
 app.use('/api/AllQuestions', AllQuestions);
+app.use('/api/ChildStats', ChildStatsRoutes);
 app.use('/api/test_cloudinary', CloudinaryRoutes);
 
 // Error handling

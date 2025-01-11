@@ -6,13 +6,18 @@ import { useQuiz } from '../hooks/useQuiz';
 import { useQuizTemplate } from '../hooks/useQuizTemplate';
 import { QuizStartCard } from '../components/quiz/QuizStartCard';
 import  Spinner  from '../components/spinner/Spinner';
+import { useChildSession } from '../hooks/useChildSession';
+import { useUser } from '../hooks/useUser';
+import { useChild } from '../hooks/useChild';
+
 const QuizPage = () => {
     const { state } = useLocation(); // Access navigation state
     const { questions, quizTemplate_id } = state || { questions: [], quizTemplate_id: null }; // Extract questions list and FullQuiz ID
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [scores, setScores] = useState([]); // To track scores for each question
     const [selectedScore, setSelectedScore] = useState(null); // Track the selected score for the current question
-    const childId = '677ba6d098d31c52ae790a31'; // Example constant child ID
+    const {userId, childId, studyLevel, sessionError, sessionLoading } = useChildSession();
+    const {child, childError, childLoading } = useChild();
     const navigate = useNavigate();
     const [isAnswered, setIsAnswered] = useState(false);
     const [quizTemplate, setQuizzTemplate] = useState(null);
@@ -28,9 +33,10 @@ const QuizPage = () => {
         };
         fetchTemplate();
     }, [quizTemplate_id]);
-
+ 
     useEffect(() => {
         console.log('QuizTemplate:', quizTemplate);
+        console.log('child: ' , child)
     }, [quizTemplate]);
 
     if (!questions.length) return <p>No questions available.</p>;
@@ -122,10 +128,11 @@ const QuizPage = () => {
                     setIsAnswered={setIsAnswered}
                 />
                 <BottomBar
-                    userName={'Mouadh Bourezg'}
+                    userName={child.firstName + " " + child.lastName}
                     onNextQuestion={handleNextQuestion}
                     isAnswered={isAnswered}
                     isLastQuestion={currentQuestionIndex == questions.length - 1}
+                    avatarUrl={child.imageUrl}
                 />
             </div>
         </div>

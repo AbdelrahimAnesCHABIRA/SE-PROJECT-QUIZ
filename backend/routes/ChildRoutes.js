@@ -18,6 +18,26 @@ router.get('/', async (req, res)=>{
     }
 })
 
+router.get('/current', async (req, res)=>{
+  try{    
+    if (!(req.session && req.session.userId)) {
+      return res.status(401).json({ error: "User not authenticated" }); 
+  }
+
+  // Check if the childId is present in the session
+  if (!req.session.childId) {
+      return res.status(400).json({ error: "No child selected" }); 
+  }
+
+      const child = await Child.find({_id: req.session.childId});
+      res.status(200).json(child);
+      
+  }catch(err){
+      console.error('Error fetching current child: ' + err);
+      res.status(500).send('Error retrieving current child instance.');
+  }
+})
+
 router.post('/chooseChild', (req, res) => {
     const { childId, studyLevel } = req.body;
   

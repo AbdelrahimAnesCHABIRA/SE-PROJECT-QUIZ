@@ -63,8 +63,6 @@ export const fetchAllQuestions = async (Level, page, filters = {}, limit = 24) =
       },
     });
 
-    console.log('Raw response:', response.data); // Debug log
-
     if (!response.data.results) {
       console.warn('No results in response:', response.data);
       return { data: [], total: 0 };
